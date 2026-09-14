@@ -542,8 +542,9 @@
             
             const logicalWidth = container.clientWidth;
             const cy = container.clientHeight * 0.62;
-            const spacing2 = Math.min(240, logicalWidth * 0.28);
-            const spacing3 = Math.min(160, logicalWidth * 0.22);
+            const isMobile = logicalWidth < 500;
+            const spacing2 = isMobile ? Math.min(110, logicalWidth * 0.25) : Math.min(240, logicalWidth * 0.28);
+            const spacing3 = isMobile ? Math.min(85, logicalWidth * 0.20) : Math.min(160, logicalWidth * 0.22);
 
             if (val === 'neutralization') {
                 apparatusList.push({ id: 'b1', type: 'beaker', chem: 'hcl', vol: 300, maxVol: 1000, x: logicalWidth/2 - spacing2, y: cy });
@@ -1205,21 +1206,35 @@
                 ctx.stroke();
 
                 // -------------------------------------------------------------------
-                // FIXED & CENTERED TEXT RENDERING (INSIDE FROSTED BADGE)
+                // FIXED & CENTERED TEXT RENDERING FOR MOBILE & DESKTOP
                 // -------------------------------------------------------------------
                 ctx.save();
-                
-                const badgeW = 126;
-                const badgeH = 56;
-                const badgeX = -badgeW / 2;
-                const badgeY = -140;
 
-                // Draw Frosted Label Plate (guarantees readability and perfect alignment)
-                ctx.fillStyle = 'rgba(15, 23, 42, 0.78)';
-                ctx.strokeStyle = isSelected ? 'rgba(56, 189, 248, 0.6)' : 'rgba(255, 255, 255, 0.15)';
+                let displayName = chemNames[item.chem] || item.chem;
+                let hasFormula = displayName.includes(' (');
+                let nameText = hasFormula ? displayName.split(' (')[0] : displayName;
+                let formulaText = hasFormula ? '(' + displayName.split(' (')[1] : '';
+                let volText = `ปริมาตร: ${item.vol} มล.`;
+
+                // วัดขนาดข้อความเพื่อคำนวณความกว้างป้ายชื่อแบบไดนามิก ป้องกันชื่อล้นบนจอมือถือ
+                ctx.font = '600 11px "Prompt", sans-serif';
+                let nameW = ctx.measureText(nameText).width;
+                ctx.font = '400 10px "Prompt", sans-serif';
+                let formulaW = formulaText ? ctx.measureText(formulaText).width : 0;
+                let volW = ctx.measureText(volText).width;
+
+                let maxContentW = Math.max(nameW, formulaW, volW);
+                let badgeW = Math.min(150, Math.max(120, maxContentW + 16));
+                let badgeH = hasFormula ? 58 : 46;
+                let badgeX = -badgeW / 2;
+                let badgeY = -142;
+                let maxTextW = badgeW - 12;
+
+                // วาดแผ่นป้ายชื่อสารเคมี
+                ctx.fillStyle = 'rgba(15, 23, 42, 0.85)';
+                ctx.strokeStyle = isSelected ? 'rgba(56, 189, 248, 0.7)' : 'rgba(255, 255, 255, 0.2)';
                 ctx.lineWidth = 1;
 
-                // Rounded Rect for Label Badge
                 if (ctx.roundRect) {
                     ctx.beginPath();
                     ctx.roundRect(badgeX, badgeY, badgeW, badgeH, 8);
@@ -1230,51 +1245,36 @@
                     ctx.strokeRect(badgeX, badgeY, badgeW, badgeH);
                 }
 
-                // Text Shadow setup
                 ctx.shadowColor = 'rgba(0, 0, 0, 0.9)';
                 ctx.shadowBlur = 3;
+                ctx.textAlign = 'center';
+                ctx.textBaseline = 'top'; // ป้องกันปัญหาเบราว์เซอร์มือถือคำนวณความสูงฟอนต์ไม่เท่ากัน
 
-                let displayName = chemNames[item.chem] || item.chem;
-
-                if (displayName.includes(' (')) {
-                    let parts = displayName.split(' (');
-                    let nameText = parts[0];
-                    let formulaText = '(' + parts[1];
-
-                    // Line 1: Main Name
-                    ctx.font = '600 11.5px "Prompt", sans-serif';
-                    ctx.textAlign = 'center';
-                    ctx.textBaseline = 'middle';
+                if (hasFormula) {
+                    // บรรทัดที่ 1: ชื่อสารเคมี
+                    ctx.font = '600 11px "Prompt", sans-serif';
                     ctx.fillStyle = '#ffffff';
-                    ctx.fillText(nameText, 0, badgeY + 14);
+                    ctx.fillText(nameText, 0, badgeY + 6, maxTextW);
 
-                    // Line 2: Chemical Formula
-                    ctx.font = '400 10.5px "Prompt", sans-serif';
-                    ctx.textAlign = 'center';
-                    ctx.textBaseline = 'middle';
-                    ctx.fillStyle = '#7dd3fc';
-                    ctx.fillText(formulaText, 0, badgeY + 29);
-
-                    // Line 3: Volume
+                    // บรรทัดที่ 2: สูตรเคมี
                     ctx.font = '400 10px "Prompt", sans-serif';
-                    ctx.textAlign = 'center';
-                    ctx.textBaseline = 'middle';
-                    ctx.fillStyle = '#cbd5e1';
-                    ctx.fillText(`ปริมาตร: ${item.vol} มล.`, 0, badgeY + 44);
-                } else {
-                    // Single Line Name
-                    ctx.font = '600 12px "Prompt", sans-serif';
-                    ctx.textAlign = 'center';
-                    ctx.textBaseline = 'middle';
-                    ctx.fillStyle = '#ffffff';
-                    ctx.fillText(displayName, 0, badgeY + 20);
+                    ctx.fillStyle = '#7dd3fc';
+                    ctx.fillText(formulaText, 0, badgeY + 23, maxTextW);
 
-                    // Line 2: Volume
-                    ctx.font = '400 10.5px "Prompt", sans-serif';
-                    ctx.textAlign = 'center';
-                    ctx.textBaseline = 'middle';
+                    // บรรทัดที่ 3: ปริมาตร
+                    ctx.font = '400 9.5px "Prompt", sans-serif';
                     ctx.fillStyle = '#cbd5e1';
-                    ctx.fillText(`ปริมาตร: ${item.vol} มล.`, 0, badgeY + 38);
+                    ctx.fillText(volText, 0, badgeY + 39, maxTextW);
+                } else {
+                    // กรณีชื่อบรรทัดเดียว
+                    ctx.font = '600 11px "Prompt", sans-serif';
+                    ctx.fillStyle = '#ffffff';
+                    ctx.fillText(displayName, 0, badgeY + 8, maxTextW);
+
+                    // บรรทัดที่ 2: ปริมาตร
+                    ctx.font = '400 9.5px "Prompt", sans-serif';
+                    ctx.fillStyle = '#cbd5e1';
+                    ctx.fillText(volText, 0, badgeY + 26, maxTextW);
                 }
                 
                 ctx.restore();
