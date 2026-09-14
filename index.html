@@ -279,6 +279,9 @@
                     <option value="golden_rain">20. ฝนทองคำ (Pb(NO₃)₂ + KI + น้ำร้อน)</option>
                     <option value="clf3_explosion">21. การระเบิดรุนแรงของ ClF₃ (ClF₃ + H₂O)</option>
                     <option value="nuclear_fission">22. จำลองปฏิกิริยานิวเคลียร์ฟิชชัน (²³⁵U + n)</option>
+                    <option value="sugar_test">23. ทดสอบน้ำตาล (Glucose + Benedict + น้ำร้อน)</option>
+                    <option value="starch_test">24. ทดสอบแป้ง (Starch + Iodine)</option>
+                    <option value="protein_test">25. ทดสอบโปรตีน (Protein + NaOH + CuSO₄)</option>
                 </select>
             </div>
 
@@ -317,6 +320,10 @@
                     <option value="clf3">คลอรีนไตรฟลูออไรด์ (ClF₃)</option>
                     <option value="u235">ยูเรเนียม-235 (²³⁵U)</option>
                     <option value="neutron">อนุภาคนิวตรอน (n⁰)</option>
+                    <option value="glucose">น้ำตาลกลูโคส (Glucose)</option>
+                    <option value="benedict">สารละลายเบเนดิกต์</option>
+                    <option value="iodine_sol">สารละลายไอโอดีน (I₂)</option>
+                    <option value="protein">โปรตีนไข่ขาว (Albumin)</option>
                 </select>
                 <label>ปริมาตร</label>
                 <input type="number" id="chemVol" value="300" min="50" max="1000" step="50" style="width: 45px;">
@@ -423,6 +430,10 @@
             clf3: 'rgba(239, 68, 68, 0.85)',
             u235: 'rgba(34, 197, 94, 0.9)',
             neutron: 'rgba(244, 114, 182, 0.8)',
+            glucose: 'rgba(255, 255, 255, 0.2)',
+            benedict: 'rgba(14, 165, 233, 0.8)',
+            iodine_sol: 'rgba(217, 119, 6, 0.8)',
+            protein: 'rgba(248, 250, 252, 0.45)',
             
             soap: 'rgba(248, 250, 252, 0.95)',
             glucose_o2: 'rgba(134, 239, 172, 0.75)',
@@ -438,7 +449,12 @@
             blood_red: 'rgba(185, 28, 28, 0.9)',
             yellow_ppt: 'rgba(250, 204, 21, 0.8)',
             explosion_plasma: 'rgba(255, 230, 0, 0.95)',
-            nuclear_glow: 'rgba(74, 222, 128, 0.95)'
+            nuclear_glow: 'rgba(74, 222, 128, 0.95)',
+            blue_mix_sugar: 'rgba(14, 165, 233, 0.6)',
+            brick_red_ppt: 'rgba(220, 38, 38, 0.85)',
+            alkaline_protein: 'rgba(248, 250, 252, 0.3)',
+            protein_cu_mix: 'rgba(14, 165, 233, 0.4)',
+            purple_biuret: 'rgba(168, 85, 247, 0.85)'
         };
 
         const chemNames = {
@@ -475,6 +491,10 @@
             clf3: 'คลอรีนไตรฟลูออไรด์ (ClF₃)',
             u235: 'ยูเรเนียม-235 (²³⁵U)',
             neutron: 'อนุภาคนิวตรอน (n⁰)',
+            glucose: 'น้ำตาลกลูโคส (Glucose)',
+            benedict: 'สารละลายเบเนดิกต์',
+            iodine_sol: 'สารละลายไอโอดีน (I₂)',
+            protein: 'โปรตีนไข่ขาว (Albumin)',
 
             soap: 'สบู่ + กลีเซอรอล',
             glucose_o2: 'กลูโคส + O₂',
@@ -490,7 +510,12 @@
             blood_red: 'สารละลายสีเลือดเทียม',
             yellow_ppt: 'ตะกอนสีเหลือง',
             explosion_plasma: 'พลาสมาและเปลวเพลิงระเบิด',
-            nuclear_glow: 'แกนปฏิกิริยานิวเคลียร์'
+            nuclear_glow: 'แกนปฏิกิริยานิวเคลียร์',
+            blue_mix_sugar: 'กลูโคส + เบเนดิกต์ (ยังไม่ต้ม)',
+            brick_red_ppt: 'ตะกอนสีแดงอิฐ (Cu₂O)',
+            alkaline_protein: 'โปรตีนในเบส',
+            protein_cu_mix: 'โปรตีน + CuSO₄',
+            purple_biuret: 'สารเชิงซ้อนไบยูเรต (สีม่วง)'
         };
 
         function spawnApparatus() {
@@ -618,6 +643,17 @@
             } else if (val === 'nuclear_fission') {
                 apparatusList.push({ id: 'b1', type: 'beaker', chem: 'u235', vol: 400, maxVol: 1000, x: logicalWidth/2 - spacing2, y: cy });
                 apparatusList.push({ id: 'b2', type: 'beaker', chem: 'neutron', vol: 200, maxVol: 1000, x: logicalWidth/2 + spacing2, y: cy });
+            } else if (val === 'sugar_test') {
+                apparatusList.push({ id: 'b1', type: 'beaker', chem: 'glucose', vol: 200, maxVol: 1000, x: logicalWidth/2 - spacing3*1.5, y: cy });
+                apparatusList.push({ id: 'b2', type: 'beaker', chem: 'benedict', vol: 200, maxVol: 1000, x: logicalWidth/2, y: cy });
+                apparatusList.push({ id: 'b3', type: 'beaker', chem: 'hot_water', vol: 300, maxVol: 1000, x: logicalWidth/2 + spacing3*1.5, y: cy });
+            } else if (val === 'starch_test') {
+                apparatusList.push({ id: 'b1', type: 'beaker', chem: 'starch', vol: 250, maxVol: 1000, x: logicalWidth/2 - spacing2, y: cy });
+                apparatusList.push({ id: 'b2', type: 'beaker', chem: 'iodine_sol', vol: 250, maxVol: 1000, x: logicalWidth/2 + spacing2, y: cy });
+            } else if (val === 'protein_test') {
+                apparatusList.push({ id: 'b1', type: 'beaker', chem: 'protein', vol: 200, maxVol: 1000, x: logicalWidth/2 - spacing3*1.5, y: cy });
+                apparatusList.push({ id: 'b2', type: 'beaker', chem: 'naoh', vol: 200, maxVol: 1000, x: logicalWidth/2, y: cy });
+                apparatusList.push({ id: 'b3', type: 'beaker', chem: 'copt', vol: 200, maxVol: 1000, x: logicalWidth/2 + spacing3*1.5, y: cy });
             }
         }
 
@@ -741,6 +777,47 @@
                 explTitle = '20. การละลายฝนทองคำ (ขั้น 2/2)';
                 explDesc = `<b>ผลการทดลอง:</b> เมื่ออุณหภูมิสูงขึ้น ตะกอน PbI₂ จะละลายกลับไปเป็นสารละลายใส`;
                 confetti({ particleCount: 100, spread: 80, origin: { y: 0.6 }, colors: ['#facc15', '#eab308'] });
+            }
+            // 23. Sugar Test (Benedict)
+            else if (isPair(sourceItem, targetItem, 'glucose', 'benedict')) {
+                targetItem.chem = 'blue_mix_sugar';
+                explTitle = '23. ทดสอบน้ำตาล (ขั้น 1/2)';
+                explDesc = `<b>ผลการทดลอง:</b> ผสมกลูโคสกับสารละลายเบเนดิกต์ ยังไม่เกิดการเปลี่ยนแปลง (ได้สารละลายสีฟ้า)<br><br><i>👉 ขั้นต่อไป: เติมน้ำร้อน (จำลองการต้ม) เพื่อให้เกิดปฏิกิริยา</i>`;
+            } else if (isPair(sourceItem, targetItem, 'blue_mix_sugar', 'hot_water')) {
+                eq = 'R-CHO + 2Cu²⁺ + 5OH⁻ → R-COO⁻ + Cu₂O↓ + 3H₂O';
+                targetItem.chem = 'brick_red_ppt';
+                targetItem.hasPrecipitate = true;
+                targetItem.isHot = true;
+                explTitle = '23. เกิดตะกอนสีแดงอิฐ (ขั้น 2/2)';
+                explDesc = `<b>สมการเคมี:</b> ${eq}<br><br><b>ผลการทดลอง:</b> เมื่อได้รับความร้อน Cu²⁺ ในเบเนดิกต์จะถูกรีดิวซ์โดยกลูโคส กลายเป็น<b>ตะกอนสีแดงอิฐ (Cu₂O)</b>`;
+                confetti({ particleCount: 80, spread: 80, origin: { y: 0.6 }, colors: ['#dc2626', '#f97316'] });
+            }
+            // 24. Starch Test
+            else if (isPair(sourceItem, targetItem, 'starch', 'iodine_sol')) {
+                targetItem.chem = 'dark_blue_iodine';
+                explTitle = '24. ทดสอบแป้งด้วยไอโอดีน';
+                explDesc = `<b>ผลการทดลอง:</b> ไอโอดีนแทรกเข้าไปในโครงสร้างเกลียวของแป้ง (Amylose) เกิดเป็นสารประกอบเชิงซ้อน<b>สีน้ำเงินเข้มถึงดำ</b>`;
+                confetti({ particleCount: 60, spread: 60, origin: { y: 0.6 }, colors: ['#1e3a8a', '#0f172a'] });
+            }
+            // 25. Protein Test (Biuret)
+            else if (isPair(sourceItem, targetItem, 'protein', 'naoh')) {
+                targetItem.chem = 'alkaline_protein';
+                explTitle = '25. ทดสอบโปรตีน (ขั้น 1/2)';
+                explDesc = `<b>ผลการทดลอง:</b> เติมเบส (NaOH) ลงในโปรตีนเพื่อปรับสภาพให้เป็นด่าง<br><br><i>👉 ขั้นต่อไป: หยดสารละลายคอปเปอร์(II)ซัลเฟต (CuSO₄)</i>`;
+            } else if (isPair(sourceItem, targetItem, 'alkaline_protein', 'copt')) {
+                targetItem.chem = 'purple_biuret';
+                explTitle = '25. ปฏิกิริยาไบยูเรต (ขั้น 2/2)';
+                explDesc = `<b>ผลการทดลอง:</b> Cu²⁺ ทำปฏิกิริยากับพันธะเพปไทด์ของโปรตีนในสภาวะเบส เกิดเป็นสารประกอบเชิงซ้อน<b>สีม่วง (Biuret complex)</b>`;
+                confetti({ particleCount: 80, spread: 80, origin: { y: 0.6 }, colors: ['#a855f7', '#d946ef'] });
+            } else if (isPair(sourceItem, targetItem, 'protein', 'copt')) {
+                targetItem.chem = 'protein_cu_mix';
+                explTitle = '25. ทดสอบโปรตีน (โปรตีน + Cu²⁺)';
+                explDesc = `<b>ผลการทดลอง:</b> ผสมโปรตีนกับ CuSO₄ สารละลายเป็นสีฟ้า ยังไม่เกิดปฏิกิริยาไบยูเรต<br><br><i>👉 ขั้นต่อไป: เติมเบส (NaOH) ลงไป</i>`;
+            } else if (isPair(sourceItem, targetItem, 'protein_cu_mix', 'naoh')) {
+                targetItem.chem = 'purple_biuret';
+                explTitle = '25. ปฏิกิริยาไบยูเรต';
+                explDesc = `<b>ผลการทดลอง:</b> เมื่อปรับสภาวะเป็นเบส Cu²⁺ จะเกิดสารประกอบเชิงซ้อนกับพันธะเพปไทด์ของโปรตีน ให้<b>สีม่วง (Biuret complex)</b> ทันที`;
+                confetti({ particleCount: 80, spread: 80, origin: { y: 0.6 }, colors: ['#a855f7', '#d946ef'] });
             }
             // Standard 2-Step Reactions
             else if (isPair(sourceItem, targetItem, 'cao', 'water')) {
@@ -933,21 +1010,48 @@
             ctx.fillStyle = grad;
             ctx.fillRect(0, tableY, displayWidth, 65);
 
-            // Draw connection line
+            // Draw connection line (Fluid Stream Simulation)
             if (connectingSource) {
-                ctx.strokeStyle = '#38bdf8';
-                ctx.lineWidth = 3;
-                ctx.setLineDash([6, 6]);
+                const streamColor = chemColors[connectingSource.chem] || '#38bdf8';
+                ctx.strokeStyle = streamColor;
+                ctx.lineWidth = 6 + Math.sin(Date.now() * 0.01) * 2; // Pulsing stream thickness
+                ctx.lineCap = 'round';
+                ctx.shadowColor = streamColor;
+                ctx.shadowBlur = 15;
                 ctx.beginPath();
-                ctx.moveTo(connectingSource.x, connectingSource.y - 235);
-                ctx.lineTo(currentPointerX, currentPointerY);
+                // Spout location
+                const startX = connectingSource.x - 75;
+                const startY = connectingSource.y - 225;
+                ctx.moveTo(startX, startY);
+                // Fluid arc (Bezier Curve) to pointer
+                const cpX = startX + (currentPointerX - startX) * 0.5;
+                const cpY = Math.min(startY - 100, currentPointerY - 50);
+                ctx.quadraticCurveTo(cpX, cpY, currentPointerX, currentPointerY);
                 ctx.stroke();
-                ctx.setLineDash([]);
+                ctx.shadowBlur = 0; // reset shadow
             }
 
             const time = Date.now() * 0.003;
 
             apparatusList.forEach(item => {
+                // Initialize physics & particle states if they don't exist
+                if (item.slosh === undefined) {
+                    item.slosh = 0;
+                    item.sloshV = 0;
+                    item.lastX = item.x;
+                    item.steamParticles = [];
+                }
+
+                // Spring Physics for Fluid Sloshing
+                let vx = item.x - item.lastX;
+                item.lastX = item.x;
+                item.sloshV += (vx * -0.012 - item.slosh) * 0.15; // Spring force
+                item.sloshV *= 0.85; // Damping/Friction
+                item.slosh += item.sloshV;
+
+                // Limit maximum slosh angle
+                item.slosh = Math.max(-0.4, Math.min(0.4, item.slosh));
+
                 ctx.save();
                 ctx.translate(item.x, item.y);
 
@@ -968,42 +1072,73 @@
                     ctx.shadowBlur = 25;
                 }
 
-                // 1. วาดพื้นหลังแก้วบีกเกอร์ส่วนหลัง (Glass Background)
-                ctx.fillStyle = 'rgba(255, 255, 255, 0.04)';
+                // 1. วาดพื้นหลังแก้วบีกเกอร์ส่วนหลัง (3D Volumetric Glass Background)
+                let innerG = ctx.createLinearGradient(-75, 0, 75, 0);
+                innerG.addColorStop(0, 'rgba(0, 0, 0, 0.35)');
+                innerG.addColorStop(0.15, 'rgba(255, 255, 255, 0.02)');
+                innerG.addColorStop(0.85, 'rgba(255, 255, 255, 0.02)');
+                innerG.addColorStop(1, 'rgba(0, 0, 0, 0.35)');
+                ctx.fillStyle = innerG;
                 ctx.beginPath();
                 ctx.moveTo(-75, -225);
                 ctx.lineTo(-75, 0);
                 ctx.ellipse(0, 0, 75, 12, 0, Math.PI, 0, true);
                 ctx.lineTo(75, -225);
-                ctx.ellipse(0, -225, 75, 12, 0, 0, Math.PI, true); // ปิดรูปทรงด้วยขอบวงรีด้านหลัง
+                ctx.ellipse(0, -225, 75, 12, 0, 0, Math.PI, true); // ปิดรูปทรง
                 ctx.fill();
 
                 ctx.shadowBlur = 0; // Reset shadow glow
 
-                // 2. วาดของเหลวในบีกเกอร์ (Liquid)
+                // 2. วาดของเหลวในบีกเกอร์ (Dynamic Liquid with Sloshing & Volume)
                 const liquidHeight = (item.vol / item.maxVol) * 195;
                 if (liquidHeight > 0) {
+                    ctx.save();
+                    
+                    // คลิปปิ้งมาสก์ให้อยู่ในขอบเขตบีกเกอร์
+                    ctx.beginPath();
+                    ctx.moveTo(-73, -225);
+                    ctx.lineTo(-73, 0);
+                    ctx.ellipse(0, 0, 73, 11, 0, Math.PI, 0, true);
+                    ctx.lineTo(73, -225);
+                    ctx.clip();
+
+                    // คำนวณความเอียงของผิวน้ำจากระบบฟิสิกส์ (Slosh angle)
+                    const angle = item.slosh;
+                    const yOffsetLeft = -73 * Math.tan(angle);
+                    const yOffsetRight = 73 * Math.tan(angle);
+
                     ctx.fillStyle = chemColors[item.chem] || 'rgba(56, 189, 248, 0.55)';
                     
-                    // ตัวของเหลว (Liquid Body)
+                    // ตัวของเหลว (Liquid Body with Volumetric Shadow)
                     ctx.beginPath();
-                    ctx.moveTo(-73, -liquidHeight);
+                    ctx.moveTo(-73, -liquidHeight + yOffsetLeft);
                     ctx.lineTo(-73, 0);
-                    ctx.ellipse(0, 0, 73, 11, 0, Math.PI, 0, true); // ขอบโค้งล่าง
-                    ctx.lineTo(73, -liquidHeight);
-                    ctx.ellipse(0, -liquidHeight, 73, 11, 0, 0, Math.PI, true); // ขอบโค้งบนด้านหลัง
+                    ctx.ellipse(0, 0, 73, 11, 0, Math.PI, 0, true); // ขอบล่าง
+                    ctx.lineTo(73, -liquidHeight + yOffsetRight);
                     ctx.fill();
 
-                    // พื้นผิวของเหลว (Liquid Surface)
+                    // เพิ่มเลเยอร์ความลึก 3 มิติให้ของเหลว (Depth Gradient)
+                    let volShadow = ctx.createLinearGradient(-73, 0, 73, 0);
+                    volShadow.addColorStop(0, 'rgba(0, 0, 0, 0.4)');
+                    volShadow.addColorStop(0.3, 'rgba(255, 255, 255, 0.05)');
+                    volShadow.addColorStop(0.7, 'rgba(255, 255, 255, 0.05)');
+                    volShadow.addColorStop(1, 'rgba(0, 0, 0, 0.5)');
+                    ctx.fillStyle = volShadow;
+                    ctx.fill();
+
+                    // พื้นผิวของเหลว (Dynamic Tilted Liquid Surface)
                     ctx.beginPath();
-                    ctx.ellipse(0, -liquidHeight, 73, 11, 0, 0, Math.PI * 2);
+                    ctx.ellipse(0, -liquidHeight, 73, 11, angle, 0, Math.PI * 2);
+                    
+                    // สีผิวน้ำ สว่างกว่าตัวของเหลวเล็กน้อย
+                    ctx.fillStyle = chemColors[item.chem] || 'rgba(56, 189, 248, 0.55)';
                     ctx.fill();
                     
-                    // ไฮไลต์ผิวน้ำ (Surface Highlight) ให้ดูมีมิติ
-                    ctx.fillStyle = 'rgba(255, 255, 255, 0.15)';
-                    ctx.beginPath();
-                    ctx.ellipse(0, -liquidHeight, 73, 11, 0, 0, Math.PI * 2);
+                    // ไฮไลต์ผิวน้ำให้ดูแวววาว (Surface Highlight)
+                    ctx.fillStyle = 'rgba(255, 255, 255, 0.25)';
                     ctx.fill();
+                    
+                    ctx.restore();
                 }
 
                 // 3. วาดตะกอนที่สมจริง (Realistic Precipitate, Suspended Particles & Sediment Heap)
@@ -1021,11 +1156,12 @@
 
                     const isYellow = (item.chem === 'yellow_ppt');
                     const isBlue = (item.chem === 'cu_oh2_ppt');
+                    const isRed = (item.chem === 'brick_red_ppt');
 
                     // Palette selection
-                    const mainColor = isYellow ? '250, 204, 21' : (isBlue ? '56, 189, 248' : '241, 245, 249');
-                    const darkColor = isYellow ? '180, 120, 10' : (isBlue ? '14, 116, 144' : '148, 163, 184');
-                    const sparkleColor = isYellow ? '#fef08a' : (isBlue ? '#e0f2fe' : '#ffffff');
+                    const mainColor = isYellow ? '250, 204, 21' : (isBlue ? '56, 189, 248' : (isRed ? '220, 38, 38' : '241, 245, 249'));
+                    const darkColor = isYellow ? '180, 120, 10' : (isBlue ? '14, 116, 144' : (isRed ? '153, 27, 27' : '148, 163, 184'));
+                    const sparkleColor = isYellow ? '#fef08a' : (isBlue ? '#e0f2fe' : (isRed ? '#fca5a5' : '#ffffff'));
 
                     // A) Soft turbid cloudiness suspended in lower half of liquid
                     const cloudGrad = ctx.createLinearGradient(0, 0, 0, -liquidHeight * 0.85);
@@ -1120,13 +1256,49 @@
                 if (item.hasBubbles) {
                     ctx.fillStyle = 'rgba(255, 255, 255, 0.85)';
                     for (let i = 0; i < 7; i++) {
-                        let bX = -45 + (i * 15) + Math.sin(time + i) * 6;
+                        // เพิ่มการแกว่ง (Wobble) ของฟองอากาศให้สมจริง
+                        let wobble = Math.sin(time * 3 + i) * 4;
+                        let bX = -45 + (i * 15) + wobble;
                         let bY = -15 - ((time * 35 + i * 25) % Math.max(20, liquidHeight));
                         if (bY > -liquidHeight) {
                             ctx.beginPath();
-                            ctx.arc(bX, bY, 4, 0, Math.PI * 2);
+                            ctx.arc(bX, bY, 3 + (i % 3), 0, Math.PI * 2);
                             ctx.fill();
                         }
+                    }
+                }
+
+                // 4.5 ระบบควันและไอน้ำ (Steam & Vapor Particle Engine)
+                if ((item.isHot || item.isExplosion) && liquidHeight > 0) {
+                    if (Math.random() < 0.4) { // Spawn rate
+                        item.steamParticles.push({
+                            x: (Math.random() - 0.5) * 100,
+                            y: -liquidHeight,
+                            vx: (Math.random() - 0.5) * 1.5,
+                            vy: -1 - Math.random() * 2,
+                            life: 1.0,
+                            size: 4 + Math.random() * 8
+                        });
+                    }
+                }
+                
+                // อัปเดตและวาดควัน
+                for (let i = item.steamParticles.length - 1; i >= 0; i--) {
+                    let p = item.steamParticles[i];
+                    p.x += p.vx;
+                    p.y += p.vy;
+                    p.life -= 0.015;
+                    p.size += 0.3; // ขยายขนาดควัน
+                    
+                    if (p.life <= 0) {
+                        item.steamParticles.splice(i, 1);
+                    } else {
+                        // วาดควันให้ดูฟุ้งกระจายสมจริง
+                        let smokeColor = item.isExplosion ? `rgba(100, 100, 100, ${p.life * 0.2})` : `rgba(255, 255, 255, ${p.life * 0.25})`;
+                        ctx.fillStyle = smokeColor;
+                        ctx.beginPath();
+                        ctx.arc(p.x, p.y, p.size, 0, Math.PI * 2);
+                        ctx.fill();
                     }
                 }
 
@@ -1161,7 +1333,7 @@
                 ctx.lineTo(-75, 0);
                 ctx.ellipse(0, 0, 75, 12, 0, Math.PI, 0, true);
                 ctx.lineTo(75, -225);
-                ctx.ellipse(0, -225, 75, 12, 0, 0, Math.PI, true);
+                    ctx.ellipse(0, -225, 75, 12, 0, 0, Math.PI, true);
                 ctx.fill();
 
                 // 7. เส้นขอบบีกเกอร์และปากเท (Outline & Spout)
@@ -1205,9 +1377,7 @@
                 ctx.lineWidth = 2.5;
                 ctx.stroke();
 
-                // -------------------------------------------------------------------
-                // FIXED & CENTERED TEXT RENDERING FOR MOBILE & DESKTOP
-                // -------------------------------------------------------------------
+                // 8. กล่องข้อความและชื่อสาร (Label Badge)
                 ctx.save();
 
                 let displayName = chemNames[item.chem] || item.chem;
@@ -1216,21 +1386,24 @@
                 let formulaText = hasFormula ? '(' + displayName.split(' (')[1] : '';
                 let volText = `ปริมาตร: ${item.vol} มล.`;
 
-                // วัดขนาดข้อความเพื่อคำนวณความกว้างป้ายชื่อแบบไดนามิก ป้องกันชื่อล้นบนจอมือถือ
+                // กำหนดความกว้างสูงสุดของข้อความที่จะแสดง
+                const MAX_TEXT_WIDTH = 130; 
+
+                // วัดขนาดข้อความ
                 ctx.font = '600 11px "Prompt", sans-serif';
-                let nameW = ctx.measureText(nameText).width;
+                let nameW = Math.min(ctx.measureText(nameText).width, MAX_TEXT_WIDTH);
                 ctx.font = '400 10px "Prompt", sans-serif';
-                let formulaW = formulaText ? ctx.measureText(formulaText).width : 0;
-                let volW = ctx.measureText(volText).width;
+                let formulaW = hasFormula ? Math.min(ctx.measureText(formulaText).width, MAX_TEXT_WIDTH) : 0;
+                let volW = Math.min(ctx.measureText(volText).width, MAX_TEXT_WIDTH);
 
                 let maxContentW = Math.max(nameW, formulaW, volW);
-                let badgeW = Math.min(150, Math.max(120, maxContentW + 16));
+                // กำหนดขนาดกล่องให้ใหญ่กว่าข้อความเล็กน้อย
+                let badgeW = Math.max(120, maxContentW + 20); 
                 let badgeH = hasFormula ? 58 : 46;
                 let badgeX = -badgeW / 2;
                 let badgeY = -142;
-                let maxTextW = badgeW - 12;
 
-                // วาดแผ่นป้ายชื่อสารเคมี
+                // วาดแผ่นป้าย
                 ctx.fillStyle = 'rgba(15, 23, 42, 0.85)';
                 ctx.strokeStyle = isSelected ? 'rgba(56, 189, 248, 0.7)' : 'rgba(255, 255, 255, 0.2)';
                 ctx.lineWidth = 1;
@@ -1245,36 +1418,33 @@
                     ctx.strokeRect(badgeX, badgeY, badgeW, badgeH);
                 }
 
+                // กำหนดค่าตั้งต้นสำหรับการวาดข้อความ
                 ctx.shadowColor = 'rgba(0, 0, 0, 0.9)';
                 ctx.shadowBlur = 3;
                 ctx.textAlign = 'center';
-                ctx.textBaseline = 'top'; // ป้องกันปัญหาเบราว์เซอร์มือถือคำนวณความสูงฟอนต์ไม่เท่ากัน
+                ctx.textBaseline = 'top';
 
+                // วาดข้อความโดยจำกัดความกว้างสูงสุด (MAX_TEXT_WIDTH)
                 if (hasFormula) {
-                    // บรรทัดที่ 1: ชื่อสารเคมี
                     ctx.font = '600 11px "Prompt", sans-serif';
                     ctx.fillStyle = '#ffffff';
-                    ctx.fillText(nameText, 0, badgeY + 6, maxTextW);
+                    ctx.fillText(nameText, 0, badgeY + 6, MAX_TEXT_WIDTH);
 
-                    // บรรทัดที่ 2: สูตรเคมี
                     ctx.font = '400 10px "Prompt", sans-serif';
                     ctx.fillStyle = '#7dd3fc';
-                    ctx.fillText(formulaText, 0, badgeY + 23, maxTextW);
+                    ctx.fillText(formulaText, 0, badgeY + 23, MAX_TEXT_WIDTH);
 
-                    // บรรทัดที่ 3: ปริมาตร
                     ctx.font = '400 9.5px "Prompt", sans-serif';
                     ctx.fillStyle = '#cbd5e1';
-                    ctx.fillText(volText, 0, badgeY + 39, maxTextW);
+                    ctx.fillText(volText, 0, badgeY + 39, MAX_TEXT_WIDTH);
                 } else {
-                    // กรณีชื่อบรรทัดเดียว
                     ctx.font = '600 11px "Prompt", sans-serif';
                     ctx.fillStyle = '#ffffff';
-                    ctx.fillText(displayName, 0, badgeY + 8, maxTextW);
+                    ctx.fillText(displayName, 0, badgeY + 8, MAX_TEXT_WIDTH);
 
-                    // บรรทัดที่ 2: ปริมาตร
                     ctx.font = '400 9.5px "Prompt", sans-serif';
                     ctx.fillStyle = '#cbd5e1';
-                    ctx.fillText(volText, 0, badgeY + 26, maxTextW);
+                    ctx.fillText(volText, 0, badgeY + 26, MAX_TEXT_WIDTH);
                 }
                 
                 ctx.restore();
