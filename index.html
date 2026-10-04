@@ -1162,7 +1162,7 @@
 
                     // --- Floating Glassmorphism Label Badge ---
                     ctx.save();
-                    ctx.rotate(-item.tilt); // Keep label perfectly horizontal always
+                    ctx.rotate(-item.tilt); // Keep perfectly horizontal always
                     
                     let dName = chemNames[item.chem] || item.chem;
                     let hasF = dName.includes(' (');
@@ -1170,7 +1170,7 @@
                     let fText = hasF ? '(' + dName.split(' (')[1] : '';
                     let vText = `ปริมาตร: ${item.vol} มล.`;
 
-                    // Fix for iOS Safari text alignment bug: Remove maxWidth constraint
+                    // Measure text widths for manual centering (Bulletproof Safari fix)
                     ctx.font = '600 11px "Prompt", sans-serif'; 
                     let nW = ctx.measureText(nText).width;
                     
@@ -1181,7 +1181,7 @@
                     let vW = ctx.measureText(vText).width;
 
                     let bW = Math.max(120, Math.max(nW, fW, vW) + 24); 
-                    let bH = hasF ? 62 : 48; let bX = -bW / 2; let bY = -145; // Centered
+                    let bH = hasF ? 62 : 48; let bX = -bW / 2; let bY = -145; 
 
                     ctx.fillStyle = 'rgba(15, 23, 42, 0.88)';
                     ctx.strokeStyle = isSelected ? 'rgba(56, 189, 248, 0.8)' : 'rgba(255, 255, 255, 0.25)';
@@ -1191,23 +1191,30 @@
                     else ctx.rect(bX, bY, bW, bH);
                     ctx.fill(); ctx.stroke();
 
-                    // Text Rendering
-                    ctx.shadowColor = 'rgba(0, 0, 0, 0.9)'; ctx.shadowBlur = 4;
-                    ctx.textAlign = 'center'; 
+                    // Text Rendering - Manual Centering completely avoids Safari textAlign bug
+                    ctx.shadowColor = 'rgba(0, 0, 0, 0.9)'; 
+                    ctx.shadowBlur = 4;
+                    ctx.textAlign = 'left'; // FORCE left alignment to fix iOS Safari bug
                     ctx.textBaseline = 'top';
 
                     if (hasF) {
                         ctx.font = '600 11px "Prompt", sans-serif'; ctx.fillStyle = '#ffffff'; 
-                        ctx.fillText(nText, 0, bY + 8);
+                        ctx.fillText(nText, -(nW / 2), bY + 8);
+                        
                         ctx.font = '400 10px "Prompt", sans-serif'; ctx.fillStyle = '#7dd3fc'; 
-                        ctx.fillText(fText, 0, bY + 25);
+                        ctx.fillText(fText, -(fW / 2), bY + 25);
+                        
                         ctx.font = '400 9.5px "Prompt", sans-serif'; ctx.fillStyle = '#cbd5e1'; 
-                        ctx.fillText(vText, 0, bY + 42);
+                        ctx.fillText(vText, -(vW / 2), bY + 42);
                     } else {
-                        ctx.font = '600 11.5px "Prompt", sans-serif'; ctx.fillStyle = '#ffffff'; 
-                        ctx.fillText(dName, 0, bY + 10);
-                        ctx.font = '400 9.5px "Prompt", sans-serif'; ctx.fillStyle = '#cbd5e1'; 
-                        ctx.fillText(vText, 0, bY + 28);
+                        ctx.font = '600 11.5px "Prompt", sans-serif'; 
+                        let dW = ctx.measureText(dName).width;
+                        ctx.fillStyle = '#ffffff'; 
+                        ctx.fillText(dName, -(dW / 2), bY + 10);
+                        
+                        ctx.font = '400 9.5px "Prompt", sans-serif'; 
+                        ctx.fillStyle = '#cbd5e1'; 
+                        ctx.fillText(vText, -(vW / 2), bY + 28);
                     }
                     ctx.restore();
                     ctx.restore(); // Complete beaker transform restore
