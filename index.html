@@ -1170,10 +1170,15 @@
                     let fText = hasF ? '(' + dName.split(' (')[1] : '';
                     let vText = `ปริมาตร: ${item.vol} มล.`;
 
-                    const M_W = 130; 
-                    ctx.font = '600 11px "Prompt", sans-serif'; let nW = Math.min(ctx.measureText(nText).width, M_W);
-                    ctx.font = '400 10px "Prompt", sans-serif'; let fW = hasF ? Math.min(ctx.measureText(fText).width, M_W) : 0;
-                    let vW = Math.min(ctx.measureText(vText).width, M_W);
+                    // Fix for iOS Safari text alignment bug: Remove maxWidth constraint
+                    ctx.font = '600 11px "Prompt", sans-serif'; 
+                    let nW = ctx.measureText(nText).width;
+                    
+                    ctx.font = '400 10px "Prompt", sans-serif'; 
+                    let fW = hasF ? ctx.measureText(fText).width : 0;
+                    
+                    ctx.font = '400 9.5px "Prompt", sans-serif'; 
+                    let vW = ctx.measureText(vText).width;
 
                     let bW = Math.max(120, Math.max(nW, fW, vW) + 24); 
                     let bH = hasF ? 62 : 48; let bX = -bW / 2; let bY = -145; // Centered
@@ -1188,15 +1193,21 @@
 
                     // Text Rendering
                     ctx.shadowColor = 'rgba(0, 0, 0, 0.9)'; ctx.shadowBlur = 4;
-                    ctx.textAlign = 'center'; ctx.textBaseline = 'top';
+                    ctx.textAlign = 'center'; 
+                    ctx.textBaseline = 'top';
 
                     if (hasF) {
-                        ctx.font = '600 11px "Prompt", sans-serif'; ctx.fillStyle = '#ffffff'; ctx.fillText(nText, 0, bY + 8, M_W);
-                        ctx.font = '400 10px "Prompt", sans-serif'; ctx.fillStyle = '#7dd3fc'; ctx.fillText(fText, 0, bY + 25, M_W);
-                        ctx.font = '400 9.5px "Prompt", sans-serif'; ctx.fillStyle = '#cbd5e1'; ctx.fillText(vText, 0, bY + 42, M_W);
+                        ctx.font = '600 11px "Prompt", sans-serif'; ctx.fillStyle = '#ffffff'; 
+                        ctx.fillText(nText, 0, bY + 8);
+                        ctx.font = '400 10px "Prompt", sans-serif'; ctx.fillStyle = '#7dd3fc'; 
+                        ctx.fillText(fText, 0, bY + 25);
+                        ctx.font = '400 9.5px "Prompt", sans-serif'; ctx.fillStyle = '#cbd5e1'; 
+                        ctx.fillText(vText, 0, bY + 42);
                     } else {
-                        ctx.font = '600 11.5px "Prompt", sans-serif'; ctx.fillStyle = '#ffffff'; ctx.fillText(dName, 0, bY + 10, M_W);
-                        ctx.font = '400 9.5px "Prompt", sans-serif'; ctx.fillStyle = '#cbd5e1'; ctx.fillText(vText, 0, bY + 28, M_W);
+                        ctx.font = '600 11.5px "Prompt", sans-serif'; ctx.fillStyle = '#ffffff'; 
+                        ctx.fillText(dName, 0, bY + 10);
+                        ctx.font = '400 9.5px "Prompt", sans-serif'; ctx.fillStyle = '#cbd5e1'; 
+                        ctx.fillText(vText, 0, bY + 28);
                     }
                     ctx.restore();
                     ctx.restore(); // Complete beaker transform restore
