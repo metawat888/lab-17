@@ -21,6 +21,7 @@
             background: #060911;
             color: #f8fafc;
             height: 100vh;
+            width: 100vw;
             overflow: hidden;
             display: flex;
             flex-direction: column;
@@ -42,14 +43,10 @@
             min-height: 64px;
             overflow-x: auto;
             white-space: nowrap;
-            scrollbar-width: thin;
-            scrollbar-color: #334155 transparent;
+            scrollbar-width: none; /* Firefox */
             box-shadow: 0 4px 20px rgba(0,0,0,0.3);
         }
-
-        .top-dashboard::-webkit-scrollbar { height: 4px; }
-        .top-dashboard::-webkit-scrollbar-track { background: transparent; }
-        .top-dashboard::-webkit-scrollbar-thumb { background-color: #334155; border-radius: 2px; }
+        .top-dashboard::-webkit-scrollbar { display: none; } /* Hide scrollbar for Chrome/Safari */
 
         .logo {
             font-size: 1.1rem;
@@ -168,7 +165,7 @@
 
         .explanation-panel.hidden {
             opacity: 0;
-            transform: translateY(-16px);
+            transform: translateY(-16px) scale(0.95);
             pointer-events: none;
         }
 
@@ -200,37 +197,31 @@
             border-radius: 6px;
             transition: all 0.2s;
         }
-
         .close-expl:hover { background: rgba(255, 255, 255, 0.15); color: #fff; }
 
-        .explanation-body {
-            font-size: 0.85rem;
-            color: #cbd5e1;
-            line-height: 1.6;
-        }
+        .explanation-body { font-size: 0.85rem; color: #cbd5e1; line-height: 1.6; }
 
-        .stage-hint {
-            position: absolute;
-            bottom: 20px;
-            left: 50%;
-            transform: translateX(-50%);
-            background: rgba(15, 23, 42, 0.85);
-            backdrop-filter: blur(12px);
-            border: 1px solid rgba(56, 189, 248, 0.3);
-            padding: 10px 24px;
-            border-radius: 30px;
-            font-size: 0.85rem;
-            color: #e2e8f0;
-            pointer-events: none;
-            z-index: 5;
-            white-space: nowrap;
-            box-shadow: 0 8px 24px rgba(0,0,0,0.5);
-            animation: floatHint 3s ease-in-out infinite;
-        }
-
-        @keyframes floatHint {
-            0%, 100% { transform: translate(-50%, 0); box-shadow: 0 8px 24px rgba(0,0,0,0.5); }
-            50% { transform: translate(-50%, -6px); box-shadow: 0 14px 28px rgba(0,0,0,0.4); border-color: rgba(56, 189, 248, 0.6); }
+        @media (max-width: 768px) {
+            .top-dashboard {
+                padding: 8px 10px;
+                min-height: 54px;
+                gap: 8px;
+            }
+            .logo { font-size: 0.95rem; margin-right: 5px; }
+            .dash-card { padding: 4px 8px; gap: 6px; }
+            label { font-size: 0.65rem; }
+            select, input { padding: 4px 6px; font-size: 0.75rem; }
+            .btn { padding: 4px 10px; font-size: 0.75rem; }
+            
+            .explanation-panel {
+                top: 10px; left: 10px; right: 10px;
+                width: auto; max-width: none;
+                padding: 15px;
+            }
+            .explanation-title { font-size: 0.9rem; }
+            .explanation-body { font-size: 0.8rem; }
+            
+            .workspace { background-size: 20px 20px, 20px 20px, 100% 100%; }
         }
     </style>
 </head>
@@ -244,7 +235,7 @@
         <div class="controls-group">
             <div class="dash-card">
                 <label>บทเรียน</label>
-                <select id="curriculumSelect" onchange="loadCurriculum()" style="width: 280px;">
+                <select id="curriculumSelect" onchange="loadCurriculum()">
                     <option value="">-- เลือกบทเรียน --</option>
                     <option value="neutralization">1. ปฏิกิริยาสะเทิน (HCl + NaOH)</option>
                     <option value="precipitation">2. การเกิดตะกอน (CuSO₄ + NaOH)</option>
@@ -281,7 +272,7 @@
 
             <div class="dash-card">
                 <label>สารเคมี</label>
-                <select id="chemSelect" style="width: 220px;">
+                <select id="chemSelect">
                     <option value="water">น้ำกลั่น (H₂O)</option>
                     <option value="hcl">กรดไฮโดรคลอริก (HCl)</option>
                     <option value="naoh">โซเดียมไฮดรอกไซด์ (NaOH)</option>
@@ -327,10 +318,10 @@
                     <option value="tollens">สารละลายทอลเลนส์ (Tollens)</option>
                 </select>
                 <label>ปริมาตร</label>
-                <input type="number" id="chemVol" value="300" min="50" max="1000" step="50" style="width: 60px;">
+                <input type="number" id="chemVol" value="300" min="50" max="1000" step="50" style="width: 65px;">
                 <button class="btn" onclick="spawnApparatus()">
                     <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><line x1="12" y1="5" x2="12" y2="19"/><line x1="5" y1="12" x2="19" y2="12"/></svg>
-                    วางบีกเกอร์
+                    เพิ่ม
                 </button>
             </div>
 
@@ -355,8 +346,6 @@
                 คำอธิบายและสมการเคมีจะแสดงที่นี่หลังจากเกิดปฏิกิริยาผสมสารสำเร็จ
             </div>
         </div>
-
-        <div class="stage-hint">💡 <b>วิธีเล่น:</b> ลากเมาส์ไปซ้าย-ขวาเพื่อเทสารเคมี (บีกเกอร์จะพลิกและเอียงตามมือคุณ)</div>
     </div>
 
     <script>
@@ -373,6 +362,25 @@
         let currentPointerX = 0;
         let currentPointerY = 0;
 
+        // --- Responsive Scaling Logic ---
+        function getScale() {
+            if (!container) return 1;
+            const w = container.clientWidth;
+            if (w < 480) return 0.60;  // Phones
+            if (w < 768) return 0.75;  // Large phones / Phablets
+            if (w < 1024) return 0.90; // Tablets
+            return 1.0;                // Desktops
+        }
+
+        function getTableY() {
+            // Keep table a consistent relative distance from bottom
+            return container.clientHeight - Math.max(100, container.clientHeight * 0.18);
+        }
+
+        function getBeakerY() {
+            return getTableY() - 15;
+        }
+
         function resizeCanvas() {
             const dpr = window.devicePixelRatio || 1;
             const displayWidth = container.clientWidth;
@@ -385,156 +393,64 @@
 
             ctx.setTransform(1, 0, 0, 1, 0, 0);
             ctx.scale(dpr, dpr);
+
+            // Dynamically reposition beakers to stay on the table upon resize/orientation flip
+            const newY = getBeakerY();
+            apparatusList.forEach(item => {
+                item.y = newY;
+            });
         }
         window.addEventListener('resize', resizeCanvas);
 
-        if (document.fonts) {
-            document.fonts.ready.then(() => drawLab());
-        }
+        if (document.fonts) { document.fonts.ready.then(() => drawLab()); }
 
         const chemColors = {
-            water: 'rgba(56, 189, 248, 0.55)',
-            hcl: 'rgba(241, 245, 249, 0.2)',
-            naoh: 'rgba(241, 245, 249, 0.2)',
-            copt: 'rgba(14, 165, 233, 0.85)',
-            kmno4: 'rgba(168, 85, 247, 0.9)',
-            bacl2: 'rgba(255, 255, 255, 0.25)',
-            nh4cl: 'rgba(203, 213, 225, 0.3)',
-            zn: 'rgba(148, 163, 184, 0.6)',
-            phenol: 'rgba(255, 255, 255, 0.2)',
-            chromate: 'rgba(234, 179, 8, 0.85)',
-            cu: 'rgba(194, 94, 58, 0.8)',
-            hno3: 'rgba(241, 245, 249, 0.25)',
-            caco3: 'rgba(226, 232, 240, 0.8)',
-            cao: 'rgba(226, 232, 240, 0.9)',
-            caoh2: 'rgba(241, 245, 249, 0.5)',
-            baoh2: 'rgba(255, 255, 255, 0.85)',
-            nh4no3: 'rgba(241, 245, 249, 0.8)',
-            oil: 'rgba(250, 214, 100, 0.85)',
-            nahco3: 'rgba(241, 245, 249, 0.25)',
-            chlorophyll: 'rgba(21, 128, 61, 0.9)',
-            nh3: 'rgba(241, 245, 249, 0.2)',
-            alcl3: 'rgba(241, 245, 249, 0.25)',
-            ki: 'rgba(241, 245, 249, 0.2)',
-            starch: 'rgba(255, 255, 255, 0.3)',
-            h2o2: 'rgba(241, 245, 249, 0.2)',
-            fecl3: 'rgba(250, 204, 21, 0.6)',
-            kscn: 'rgba(241, 245, 249, 0.2)',
-            naf: 'rgba(241, 245, 249, 0.2)',
-            pbno32: 'rgba(241, 245, 249, 0.2)',
-            hot_water: 'rgba(56, 189, 248, 0.4)',
-            clf3: 'rgba(239, 68, 68, 0.85)',
-            u235: 'rgba(34, 197, 94, 0.9)',
-            neutron: 'rgba(244, 114, 182, 0.8)',
-            glucose: 'rgba(255, 255, 255, 0.2)',
-            benedict: 'rgba(14, 165, 233, 0.8)',
-            iodine_sol: 'rgba(217, 119, 6, 0.8)',
-            protein: 'rgba(248, 250, 252, 0.45)',
-            soap_liquid: 'rgba(167, 243, 208, 0.6)',
-            methylene_blue_colorless: 'rgba(255, 255, 255, 0.1)',
-            oxygen_gas: 'rgba(255, 255, 255, 0.3)',
-            milk_color: 'rgba(255, 255, 255, 0.95)',
-            al_foil: 'rgba(156, 163, 175, 0.9)',
-            cucl2: 'rgba(16, 185, 129, 0.8)',
-            tollens: 'rgba(255, 255, 255, 0.2)',
+            water: 'rgba(56, 189, 248, 0.55)', hcl: 'rgba(241, 245, 249, 0.2)', naoh: 'rgba(241, 245, 249, 0.2)',
+            copt: 'rgba(14, 165, 233, 0.85)', kmno4: 'rgba(168, 85, 247, 0.9)', bacl2: 'rgba(255, 255, 255, 0.25)',
+            nh4cl: 'rgba(203, 213, 225, 0.3)', zn: 'rgba(148, 163, 184, 0.6)', phenol: 'rgba(255, 255, 255, 0.2)',
+            chromate: 'rgba(234, 179, 8, 0.85)', cu: 'rgba(194, 94, 58, 0.8)', hno3: 'rgba(241, 245, 249, 0.25)',
+            caco3: 'rgba(226, 232, 240, 0.8)', cao: 'rgba(226, 232, 240, 0.9)', caoh2: 'rgba(241, 245, 249, 0.5)',
+            baoh2: 'rgba(255, 255, 255, 0.85)', nh4no3: 'rgba(241, 245, 249, 0.8)', oil: 'rgba(250, 214, 100, 0.85)',
+            nahco3: 'rgba(241, 245, 249, 0.25)', chlorophyll: 'rgba(21, 128, 61, 0.9)', nh3: 'rgba(241, 245, 249, 0.2)',
+            alcl3: 'rgba(241, 245, 249, 0.25)', ki: 'rgba(241, 245, 249, 0.2)', starch: 'rgba(255, 255, 255, 0.3)',
+            h2o2: 'rgba(241, 245, 249, 0.2)', fecl3: 'rgba(250, 204, 21, 0.6)', kscn: 'rgba(241, 245, 249, 0.2)',
+            naf: 'rgba(241, 245, 249, 0.2)', pbno32: 'rgba(241, 245, 249, 0.2)', hot_water: 'rgba(56, 189, 248, 0.4)',
+            clf3: 'rgba(239, 68, 68, 0.85)', u235: 'rgba(34, 197, 94, 0.9)', neutron: 'rgba(244, 114, 182, 0.8)',
+            glucose: 'rgba(255, 255, 255, 0.2)', benedict: 'rgba(14, 165, 233, 0.8)', iodine_sol: 'rgba(217, 119, 6, 0.8)',
+            protein: 'rgba(248, 250, 252, 0.45)', soap_liquid: 'rgba(167, 243, 208, 0.6)', methylene_blue_colorless: 'rgba(255, 255, 255, 0.1)',
+            oxygen_gas: 'rgba(255, 255, 255, 0.3)', milk_color: 'rgba(255, 255, 255, 0.95)', al_foil: 'rgba(156, 163, 175, 0.9)',
+            cucl2: 'rgba(16, 185, 129, 0.8)', tollens: 'rgba(255, 255, 255, 0.2)',
             
-            soap: 'rgba(248, 250, 252, 0.95)',
-            glucose_o2: 'rgba(134, 239, 172, 0.75)',
-            pink_solution: 'rgba(236, 72, 153, 0.75)',
-            orange_solution: 'rgba(249, 115, 22, 0.85)',
-            green_gas_solution: 'rgba(34, 197, 94, 0.8)',
-            cold_solution: 'rgba(186, 230, 253, 0.6)',
-            white_ppt: 'rgba(255, 255, 255, 0.35)',
-            cu_oh2_ppt: 'rgba(56, 189, 248, 0.6)',
-            deep_blue_solution: 'rgba(30, 58, 138, 0.9)',
-            ki_starch_mix: 'rgba(255, 255, 255, 0.25)',
-            dark_blue_iodine: 'rgba(15, 23, 42, 0.95)',
-            blood_red: 'rgba(185, 28, 28, 0.9)',
-            yellow_ppt: 'rgba(250, 204, 21, 0.8)',
-            explosion_plasma: 'rgba(255, 230, 0, 0.95)',
-            nuclear_glow: 'rgba(74, 222, 128, 0.95)',
-            blue_mix_sugar: 'rgba(14, 165, 233, 0.6)',
-            brick_red_ppt: 'rgba(220, 38, 38, 0.85)',
-            alkaline_protein: 'rgba(248, 250, 252, 0.3)',
-            protein_cu_mix: 'rgba(14, 165, 233, 0.4)',
-            purple_biuret: 'rgba(168, 85, 247, 0.85)',
-            elephant_foam: 'rgba(253, 230, 138, 0.95)',
-            blue_bottle_active: 'rgba(37, 99, 235, 0.9)',
-            magic_milk_swirl: 'rgba(244, 114, 182, 0.9)',
-            al_cu_rxn: 'rgba(15, 118, 110, 0.8)',
+            soap: 'rgba(248, 250, 252, 0.95)', glucose_o2: 'rgba(134, 239, 172, 0.75)', pink_solution: 'rgba(236, 72, 153, 0.75)',
+            orange_solution: 'rgba(249, 115, 22, 0.85)', green_gas_solution: 'rgba(34, 197, 94, 0.8)', cold_solution: 'rgba(186, 230, 253, 0.6)',
+            white_ppt: 'rgba(255, 255, 255, 0.35)', cu_oh2_ppt: 'rgba(56, 189, 248, 0.6)', deep_blue_solution: 'rgba(30, 58, 138, 0.9)',
+            ki_starch_mix: 'rgba(255, 255, 255, 0.25)', dark_blue_iodine: 'rgba(15, 23, 42, 0.95)', blood_red: 'rgba(185, 28, 28, 0.9)',
+            yellow_ppt: 'rgba(250, 204, 21, 0.8)', explosion_plasma: 'rgba(255, 230, 0, 0.95)', nuclear_glow: 'rgba(74, 222, 128, 0.95)',
+            blue_mix_sugar: 'rgba(14, 165, 233, 0.6)', brick_red_ppt: 'rgba(220, 38, 38, 0.85)', alkaline_protein: 'rgba(248, 250, 252, 0.3)',
+            protein_cu_mix: 'rgba(14, 165, 233, 0.4)', purple_biuret: 'rgba(168, 85, 247, 0.85)', elephant_foam: 'rgba(253, 230, 138, 0.95)',
+            blue_bottle_active: 'rgba(37, 99, 235, 0.9)', magic_milk_swirl: 'rgba(244, 114, 182, 0.9)', al_cu_rxn: 'rgba(15, 118, 110, 0.8)',
             silver_mirror_glass: 'rgba(209, 213, 219, 0.95)'
         };
 
         const chemNames = {
-            water: 'น้ำกลั่น (H₂O)',
-            hcl: 'กรดไฮโดรคลอริก (HCl)',
-            naoh: 'โซเดียมไฮดรอกไซด์ (NaOH)',
-            copt: 'คอปเปอร์ซัลเฟต (CuSO₄)',
-            kmno4: 'ด่างทับทิม (KMnO₄)',
-            bacl2: 'แบเรียมคลอไรด์ (BaCl₂)',
-            nh4cl: 'แอมโมเนียมคลอไรด์ (NH₄Cl)',
-            zn: 'โลหะสังกะสี (Zn)',
-            phenol: 'ฟีนอลฟทาลีน',
-            chromate: 'โพแทสเซียมโครเมต (K₂CrO₄)',
-            cu: 'โลหะทองแดง (Cu)',
-            hno3: 'กรดไนตริก (HNO₃)',
-            caco3: 'หินปูน (CaCO₃)',
-            cao: 'แคลเซียมออกไซด์ (CaO)',
-            caoh2: 'แคลเซียมไฮดรอกไซด์ (Ca(OH)₂)',
-            baoh2: 'แบเรียมไฮดรอกไซด์ (Ba(OH)₂)',
-            nh4no3: 'แอมโมเนียมไนเตรต (NH₄NO₃)',
-            oil: 'น้ำมันพืช (Lipid)',
-            nahco3: 'โซเดียมไบคาร์บอเนต (NaHCO₃)',
-            chlorophyll: 'คลอโรฟิลล์',
-            nh3: 'แอมโมเนีย (NH₃)',
-            alcl3: 'อะลูมิเนียมคลอไรด์ (AlCl₃)',
-            ki: 'โพแทสเซียมไอโอไดด์ (KI)',
-            starch: 'น้ำแป้ง (Starch)',
-            h2o2: 'ไฮโดรเจนเปอร์ออกไซด์ (H₂O₂)',
-            fecl3: 'ไอร์ออน(III)คลอไรด์ (FeCl₃)',
-            kscn: 'โพแทสเซียมไทโอไซยาเนต (KSCN)',
-            naf: 'โซเดียมฟลูออไรด์ (NaF)',
-            pbno32: 'เลด(II)ไนเตรต (Pb(NO₃)₂)',
-            hot_water: 'น้ำร้อน',
-            clf3: 'คลอรีนไตรฟลูออไรด์ (ClF₃)',
-            u235: 'ยูเรเนียม-235 (²³⁵U)',
-            neutron: 'อนุภาคนิวตรอน (n⁰)',
-            glucose: 'น้ำตาลกลูโคส (Glucose)',
-            benedict: 'สารละลายเบเนดิกต์',
-            iodine_sol: 'สารละลายไอโอดีน (I₂)',
-            protein: 'โปรตีนไข่ขาว (Albumin)',
-            soap_liquid: 'น้ำยาล้างจาน/สบู่',
-            methylene_blue_colorless: 'Methylene Blue (ไร้สี)',
-            oxygen_gas: 'ออกซิเจน (O₂)',
-            milk_color: 'นมสดหยดสี',
-            al_foil: 'แผ่นอะลูมิเนียม',
-            cucl2: 'คอปเปอร์(II)คลอไรด์',
-            tollens: 'Tollens\' Reagent',
-
-            soap: 'สบู่ + กลีเซอรอล',
-            glucose_o2: 'กลูโคส + O₂',
-            pink_solution: 'สารละลายสีชมพู',
-            orange_solution: 'สารละลายสีส้ม',
-            green_gas_solution: 'สารละลายสีเขียว (NO₂↑)',
-            cold_solution: 'สารละลายเย็น',
-            white_ppt: 'ตะกอนสีขาว',
-            cu_oh2_ppt: 'ตะกอน Cu(OH)₂',
-            deep_blue_solution: 'สารเชิงซ้อนสีน้ำเงินเข้ม',
-            ki_starch_mix: 'น้ำแป้ง + ไอโอไดด์',
-            dark_blue_iodine: 'คอมเพล็กซ์ไอโอดีน-แป้ง',
-            blood_red: 'สารละลายสีเลือดเทียม',
-            yellow_ppt: 'ตะกอนสีเหลือง',
-            explosion_plasma: 'พลาสมาและเปลวเพลิงระเบิด',
-            nuclear_glow: 'แกนปฏิกิริยานิวเคลียร์',
-            blue_mix_sugar: 'กลูโคส + เบเนดิกต์ (ยังไม่ต้ม)',
-            brick_red_ppt: 'ตะกอนสีแดงอิฐ (Cu₂O)',
-            alkaline_protein: 'โปรตีนในเบส',
-            protein_cu_mix: 'โปรตีน + CuSO₄',
-            purple_biuret: 'สารเชิงซ้อนไบยูเรต (สีม่วง)',
-            elephant_foam: 'ฟองออกซิเจนจำนวนมาก',
-            blue_bottle_active: 'Methylene Blue (สีน้ำเงิน)',
-            magic_milk_swirl: 'สีผสมอาหารกระจายตัว',
-            al_cu_rxn: 'สารละลาย AlCl₃ + Cu',
+            water: 'น้ำกลั่น (H₂O)', hcl: 'กรดไฮโดรคลอริก (HCl)', naoh: 'โซเดียมไฮดรอกไซด์ (NaOH)', copt: 'คอปเปอร์ซัลเฟต (CuSO₄)',
+            kmno4: 'ด่างทับทิม (KMnO₄)', bacl2: 'แบเรียมคลอไรด์ (BaCl₂)', nh4cl: 'แอมโมเนียมคลอไรด์ (NH₄Cl)', zn: 'โลหะสังกะสี (Zn)',
+            phenol: 'ฟีนอลฟทาลีน', chromate: 'โพแทสเซียมโครเมต (K₂CrO₄)', cu: 'โลหะทองแดง (Cu)', hno3: 'กรดไนตริก (HNO₃)',
+            caco3: 'หินปูน (CaCO₃)', cao: 'แคลเซียมออกไซด์ (CaO)', caoh2: 'แคลเซียมไฮดรอกไซด์ (Ca(OH)₂)', baoh2: 'แบเรียมไฮดรอกไซด์ (Ba(OH)₂)',
+            nh4no3: 'แอมโมเนียมไนเตรต (NH₄NO₃)', oil: 'น้ำมันพืช (Lipid)', nahco3: 'โซเดียมไบคาร์บอเนต (NaHCO₃)', chlorophyll: 'คลอโรฟิลล์',
+            nh3: 'แอมโมเนีย (NH₃)', alcl3: 'อะลูมิเนียมคลอไรด์ (AlCl₃)', ki: 'โพแทสเซียมไอโอไดด์ (KI)', starch: 'น้ำแป้ง (Starch)',
+            h2o2: 'ไฮโดรเจนเปอร์ออกไซด์ (H₂O₂)', fecl3: 'ไอร์ออน(III)คลอไรด์ (FeCl₃)', kscn: 'โพแทสเซียมไทโอไซยาเนต (KSCN)',
+            naf: 'โซเดียมฟลูออไรด์ (NaF)', pbno32: 'เลด(II)ไนเตรต (Pb(NO₃)₂)', hot_water: 'น้ำร้อน', clf3: 'คลอรีนไตรฟลูออไรด์ (ClF₃)',
+            u235: 'ยูเรเนียม-235 (²³⁵U)', neutron: 'อนุภาคนิวตรอน (n⁰)', glucose: 'น้ำตาลกลูโคส (Glucose)', benedict: 'สารละลายเบเนดิกต์',
+            iodine_sol: 'สารละลายไอโอดีน (I₂)', protein: 'โปรตีนไข่ขาว (Albumin)', soap_liquid: 'น้ำยาล้างจาน/สบู่', methylene_blue_colorless: 'Methylene Blue (ไร้สี)',
+            oxygen_gas: 'ออกซิเจน (O₂)', milk_color: 'นมสดหยดสี', al_foil: 'แผ่นอะลูมิเนียม', cucl2: 'คอปเปอร์(II)คลอไรด์', tollens: 'Tollens\' Reagent',
+            soap: 'สบู่ + กลีเซอรอล', glucose_o2: 'กลูโคส + O₂', pink_solution: 'สารละลายสีชมพู', orange_solution: 'สารละลายสีส้ม',
+            green_gas_solution: 'สารละลายสีเขียว (NO₂↑)', cold_solution: 'สารละลายเย็น', white_ppt: 'ตะกอนสีขาว', cu_oh2_ppt: 'ตะกอน Cu(OH)₂',
+            deep_blue_solution: 'สารเชิงซ้อนสีน้ำเงินเข้ม', ki_starch_mix: 'น้ำแป้ง + ไอโอไดด์', dark_blue_iodine: 'คอมเพล็กซ์ไอโอดีน-แป้ง',
+            blood_red: 'สารละลายสีเลือดเทียม', yellow_ppt: 'ตะกอนสีเหลือง', explosion_plasma: 'พลาสมาและเปลวเพลิงระเบิด', nuclear_glow: 'แกนปฏิกิริยานิวเคลียร์',
+            blue_mix_sugar: 'กลูโคส + เบเนดิกต์ (ยังไม่ต้ม)', brick_red_ppt: 'ตะกอนสีแดงอิฐ (Cu₂O)', alkaline_protein: 'โปรตีนในเบส',
+            protein_cu_mix: 'โปรตีน + CuSO₄', purple_biuret: 'สารเชิงซ้อนไบยูเรต (สีม่วง)', elephant_foam: 'ฟองออกซิเจนจำนวนมาก',
+            blue_bottle_active: 'Methylene Blue (สีน้ำเงิน)', magic_milk_swirl: 'สีผสมอาหารกระจายตัว', al_cu_rxn: 'สารละลาย AlCl₃ + Cu',
             silver_mirror_glass: 'กระจกฉาบเงิน (Ag)'
         };
 
@@ -543,13 +459,19 @@
             const vol = parseFloat(document.getElementById('chemVol').value);
 
             const id = 'app_' + Date.now();
+            const scale = getScale();
+            const beakerW = 150 * scale;
             const logicalWidth = container.clientWidth;
-            const x = 120 + Math.random() * Math.max(50, (logicalWidth - 240));
-            const y = container.clientHeight - 195;
+            
+            // Limit spawning within visible scaled bounds
+            const minX = beakerW;
+            const maxX = logicalWidth - beakerW;
+            const spawnX = Math.max(minX, Math.min(maxX, (logicalWidth / 2) + (Math.random() * 100 - 50)));
+            const y = getBeakerY();
 
             const newItem = {
                 id, type: 'beaker', chem, vol, maxVol: 1000,
-                x, y, width: 110, height: 160,
+                x: spawnX, y, width: 110, height: 160,
                 hasPrecipitate: false, hasBubbles: false,
                 isHot: false, isCold: false,
                 isExplosion: false, isNuclear: false
@@ -572,9 +494,7 @@
             document.getElementById('explanationPanel').classList.remove('hidden');
         }
 
-        function hideExplanation() {
-            document.getElementById('explanationPanel').classList.add('hidden');
-        }
+        function hideExplanation() { document.getElementById('explanationPanel').classList.add('hidden'); }
 
         function loadCurriculum() {
             const val = document.getElementById('curriculumSelect').value;
@@ -582,10 +502,12 @@
             hideExplanation();
             
             const logicalWidth = container.clientWidth;
-            const cy = container.clientHeight - 195;
-            const isMobile = logicalWidth < 500;
-            const spacing2 = isMobile ? Math.min(110, logicalWidth * 0.25) : Math.min(240, logicalWidth * 0.28);
-            const spacing3 = isMobile ? Math.min(85, logicalWidth * 0.20) : Math.min(160, logicalWidth * 0.22);
+            const cy = getBeakerY();
+            const scale = getScale();
+            
+            // Spacing depends dynamically on scale factor
+            const spacing2 = 130 * scale; 
+            const spacing3 = 100 * scale; 
 
             if (val === 'neutralization') {
                 apparatusList.push({ id: 'b1', type: 'beaker', chem: 'hcl', vol: 300, maxVol: 1000, x: logicalWidth/2 - spacing2, y: cy });
@@ -630,29 +552,29 @@
                 apparatusList.push({ id: 'b1', type: 'beaker', chem: 'chlorophyll', vol: 250, maxVol: 1000, x: logicalWidth/2 - spacing2, y: cy });
                 apparatusList.push({ id: 'b2', type: 'beaker', chem: 'nahco3', vol: 250, maxVol: 1000, x: logicalWidth/2 + spacing2, y: cy });
             } else if (val === 'titration_reversal') {
-                apparatusList.push({ id: 'b1', type: 'beaker', chem: 'naoh', vol: 200, maxVol: 1000, x: logicalWidth/2 - spacing3*1.5, y: cy });
+                apparatusList.push({ id: 'b1', type: 'beaker', chem: 'naoh', vol: 200, maxVol: 1000, x: logicalWidth/2 - spacing3*1.8, y: cy });
                 apparatusList.push({ id: 'b2', type: 'beaker', chem: 'phenol', vol: 200, maxVol: 1000, x: logicalWidth/2, y: cy });
-                apparatusList.push({ id: 'b3', type: 'beaker', chem: 'hcl', vol: 300, maxVol: 1000, x: logicalWidth/2 + spacing3*1.5, y: cy });
+                apparatusList.push({ id: 'b3', type: 'beaker', chem: 'hcl', vol: 300, maxVol: 1000, x: logicalWidth/2 + spacing3*1.8, y: cy });
             } else if (val === 'amphoteric') {
-                apparatusList.push({ id: 'b1', type: 'beaker', chem: 'alcl3', vol: 200, maxVol: 1000, x: logicalWidth/2 - spacing3*1.5, y: cy });
+                apparatusList.push({ id: 'b1', type: 'beaker', chem: 'alcl3', vol: 200, maxVol: 1000, x: logicalWidth/2 - spacing3*1.8, y: cy });
                 apparatusList.push({ id: 'b2', type: 'beaker', chem: 'naoh', vol: 150, maxVol: 1000, x: logicalWidth/2, y: cy });
-                apparatusList.push({ id: 'b3', type: 'beaker', chem: 'naoh', vol: 300, maxVol: 1000, x: logicalWidth/2 + spacing3*1.5, y: cy });
+                apparatusList.push({ id: 'b3', type: 'beaker', chem: 'naoh', vol: 300, maxVol: 1000, x: logicalWidth/2 + spacing3*1.8, y: cy });
             } else if (val === 'copper_complex') {
-                apparatusList.push({ id: 'b1', type: 'beaker', chem: 'copt', vol: 200, maxVol: 1000, x: logicalWidth/2 - spacing3*1.5, y: cy });
+                apparatusList.push({ id: 'b1', type: 'beaker', chem: 'copt', vol: 200, maxVol: 1000, x: logicalWidth/2 - spacing3*1.8, y: cy });
                 apparatusList.push({ id: 'b2', type: 'beaker', chem: 'naoh', vol: 150, maxVol: 1000, x: logicalWidth/2, y: cy });
-                apparatusList.push({ id: 'b3', type: 'beaker', chem: 'nh3', vol: 300, maxVol: 1000, x: logicalWidth/2 + spacing3*1.5, y: cy });
+                apparatusList.push({ id: 'b3', type: 'beaker', chem: 'nh3', vol: 300, maxVol: 1000, x: logicalWidth/2 + spacing3*1.8, y: cy });
             } else if (val === 'iodine_starch') {
-                apparatusList.push({ id: 'b1', type: 'beaker', chem: 'ki', vol: 200, maxVol: 1000, x: logicalWidth/2 - spacing3*1.5, y: cy });
+                apparatusList.push({ id: 'b1', type: 'beaker', chem: 'ki', vol: 200, maxVol: 1000, x: logicalWidth/2 - spacing3*1.8, y: cy });
                 apparatusList.push({ id: 'b2', type: 'beaker', chem: 'starch', vol: 200, maxVol: 1000, x: logicalWidth/2, y: cy });
-                apparatusList.push({ id: 'b3', type: 'beaker', chem: 'h2o2', vol: 200, maxVol: 1000, x: logicalWidth/2 + spacing3*1.5, y: cy });
+                apparatusList.push({ id: 'b3', type: 'beaker', chem: 'h2o2', vol: 200, maxVol: 1000, x: logicalWidth/2 + spacing3*1.8, y: cy });
             } else if (val === 'fake_blood') {
-                apparatusList.push({ id: 'b1', type: 'beaker', chem: 'fecl3', vol: 200, maxVol: 1000, x: logicalWidth/2 - spacing3*1.5, y: cy });
+                apparatusList.push({ id: 'b1', type: 'beaker', chem: 'fecl3', vol: 200, maxVol: 1000, x: logicalWidth/2 - spacing3*1.8, y: cy });
                 apparatusList.push({ id: 'b2', type: 'beaker', chem: 'kscn', vol: 200, maxVol: 1000, x: logicalWidth/2, y: cy });
-                apparatusList.push({ id: 'b3', type: 'beaker', chem: 'naf', vol: 250, maxVol: 1000, x: logicalWidth/2 + spacing3*1.5, y: cy });
+                apparatusList.push({ id: 'b3', type: 'beaker', chem: 'naf', vol: 250, maxVol: 1000, x: logicalWidth/2 + spacing3*1.8, y: cy });
             } else if (val === 'golden_rain') {
-                apparatusList.push({ id: 'b1', type: 'beaker', chem: 'pbno32', vol: 200, maxVol: 1000, x: logicalWidth/2 - spacing3*1.5, y: cy });
+                apparatusList.push({ id: 'b1', type: 'beaker', chem: 'pbno32', vol: 200, maxVol: 1000, x: logicalWidth/2 - spacing3*1.8, y: cy });
                 apparatusList.push({ id: 'b2', type: 'beaker', chem: 'ki', vol: 200, maxVol: 1000, x: logicalWidth/2, y: cy });
-                apparatusList.push({ id: 'b3', type: 'beaker', chem: 'hot_water', vol: 300, maxVol: 1000, x: logicalWidth/2 + spacing3*1.5, y: cy });
+                apparatusList.push({ id: 'b3', type: 'beaker', chem: 'hot_water', vol: 300, maxVol: 1000, x: logicalWidth/2 + spacing3*1.8, y: cy });
             } else if (val === 'clf3_explosion') {
                 apparatusList.push({ id: 'b1', type: 'beaker', chem: 'clf3', vol: 250, maxVol: 1000, x: logicalWidth/2 - spacing2, y: cy });
                 apparatusList.push({ id: 'b2', type: 'beaker', chem: 'water', vol: 300, maxVol: 1000, x: logicalWidth/2 + spacing2, y: cy });
@@ -660,20 +582,20 @@
                 apparatusList.push({ id: 'b1', type: 'beaker', chem: 'u235', vol: 400, maxVol: 1000, x: logicalWidth/2 - spacing2, y: cy });
                 apparatusList.push({ id: 'b2', type: 'beaker', chem: 'neutron', vol: 200, maxVol: 1000, x: logicalWidth/2 + spacing2, y: cy });
             } else if (val === 'sugar_test') {
-                apparatusList.push({ id: 'b1', type: 'beaker', chem: 'glucose', vol: 200, maxVol: 1000, x: logicalWidth/2 - spacing3*1.5, y: cy });
+                apparatusList.push({ id: 'b1', type: 'beaker', chem: 'glucose', vol: 200, maxVol: 1000, x: logicalWidth/2 - spacing3*1.8, y: cy });
                 apparatusList.push({ id: 'b2', type: 'beaker', chem: 'benedict', vol: 200, maxVol: 1000, x: logicalWidth/2, y: cy });
-                apparatusList.push({ id: 'b3', type: 'beaker', chem: 'hot_water', vol: 300, maxVol: 1000, x: logicalWidth/2 + spacing3*1.5, y: cy });
+                apparatusList.push({ id: 'b3', type: 'beaker', chem: 'hot_water', vol: 300, maxVol: 1000, x: logicalWidth/2 + spacing3*1.8, y: cy });
             } else if (val === 'starch_test') {
                 apparatusList.push({ id: 'b1', type: 'beaker', chem: 'starch', vol: 250, maxVol: 1000, x: logicalWidth/2 - spacing2, y: cy });
                 apparatusList.push({ id: 'b2', type: 'beaker', chem: 'iodine_sol', vol: 250, maxVol: 1000, x: logicalWidth/2 + spacing2, y: cy });
             } else if (val === 'protein_test') {
-                apparatusList.push({ id: 'b1', type: 'beaker', chem: 'protein', vol: 200, maxVol: 1000, x: logicalWidth/2 - spacing3*1.5, y: cy });
+                apparatusList.push({ id: 'b1', type: 'beaker', chem: 'protein', vol: 200, maxVol: 1000, x: logicalWidth/2 - spacing3*1.8, y: cy });
                 apparatusList.push({ id: 'b2', type: 'beaker', chem: 'naoh', vol: 200, maxVol: 1000, x: logicalWidth/2, y: cy });
-                apparatusList.push({ id: 'b3', type: 'beaker', chem: 'copt', vol: 200, maxVol: 1000, x: logicalWidth/2 + spacing3*1.5, y: cy });
+                apparatusList.push({ id: 'b3', type: 'beaker', chem: 'copt', vol: 200, maxVol: 1000, x: logicalWidth/2 + spacing3*1.8, y: cy });
             } else if (val === 'elephant_toothpaste') {
-                apparatusList.push({ id: 'b1', type: 'beaker', chem: 'h2o2', vol: 200, maxVol: 1000, x: logicalWidth/2 - spacing3*1.5, y: cy });
+                apparatusList.push({ id: 'b1', type: 'beaker', chem: 'h2o2', vol: 200, maxVol: 1000, x: logicalWidth/2 - spacing3*1.8, y: cy });
                 apparatusList.push({ id: 'b2', type: 'beaker', chem: 'soap_liquid', vol: 100, maxVol: 1000, x: logicalWidth/2, y: cy });
-                apparatusList.push({ id: 'b3', type: 'beaker', chem: 'ki', vol: 200, maxVol: 1000, x: logicalWidth/2 + spacing3*1.5, y: cy });
+                apparatusList.push({ id: 'b3', type: 'beaker', chem: 'ki', vol: 200, maxVol: 1000, x: logicalWidth/2 + spacing3*1.8, y: cy });
             } else if (val === 'blue_bottle') {
                 apparatusList.push({ id: 'b1', type: 'beaker', chem: 'methylene_blue_colorless', vol: 300, maxVol: 1000, x: logicalWidth/2 - spacing2, y: cy });
                 apparatusList.push({ id: 'b2', type: 'beaker', chem: 'oxygen_gas', vol: 300, maxVol: 1000, x: logicalWidth/2 + spacing2, y: cy });
@@ -691,19 +613,18 @@
 
         function triggerConnectionReaction(sourceItem, targetItem) {
             if (sourceItem.id === targetItem.id) return;
-            if (sourceItem.vol <= 0) return; // ไม่สามารถเทจากบีกเกอร์เปล่าได้
+            if (sourceItem.vol <= 0) return; // ไม่เทจากขวดเปล่า
 
             let eq = '';
             let explTitle = '';
             let explDesc = '';
             
-            // 1. ถ่ายเทสารใส่บีกเกอร์เปล่า (ไม่มีปฏิกิริยาเคมี แค่ย้ายของเหลว)
+            // 1. ถ่ายเทสารใส่บีกเกอร์เปล่า (ไม่มีปฏิกิริยา)
             if (targetItem.vol <= 0) {
                 let transferVol = Math.min(sourceItem.vol, targetItem.maxVol);
                 targetItem.vol = transferVol;
-                sourceItem.vol -= transferVol;
-
-                // ย้ายชนิดสารและคุณสมบัติต่างๆ ไปยังบีกเกอร์เปล่า
+                sourceItem.vol = Math.max(0, sourceItem.vol - transferVol);
+                
                 targetItem.chem = sourceItem.chem;
                 targetItem.hasPrecipitate = sourceItem.hasPrecipitate;
                 targetItem.hasBubbles = sourceItem.hasBubbles;
@@ -716,29 +637,24 @@
                 explTitle = 'การถ่ายเทสารเคมี';
                 explDesc = `<b>ผลการทำงาน:</b> เทสารลงในภาชนะเปล่า (ไม่เกิดปฏิกิริยา)`;
                 updateExplanation(explTitle, explDesc);
-                return; // หยุดการทำงาน ไม่ต้องเช็คปฏิกิริยาเคมี
+                return; 
             }
 
-            // 2. การผสมสาร (คำนวณปฏิกิริยาเคมี)
+            // 2. การผสมสาร (คำนวณปฏิกิริยา)
             let totalVol = sourceItem.vol + targetItem.vol;
             let combinedVol = Math.min(totalVol, targetItem.maxVol);
-            let leftoverVol = Math.max(0, totalVol - targetItem.maxVol); // คำนวณสารที่เหลือหากล้นบีกเกอร์
+            let leftoverVol = Math.max(0, totalVol - targetItem.maxVol); 
             
             targetItem.vol = combinedVol;
             sourceItem.vol = leftoverVol;
             
-            targetItem.hasPrecipitate = false;
-            targetItem.hasBubbles = false;
-            targetItem.isHot = false;
-            targetItem.isCold = false;
-            targetItem.isExplosion = false;
-            targetItem.isNuclear = false;
-            
+            targetItem.hasPrecipitate = false; targetItem.hasBubbles = false;
+            targetItem.isHot = false; targetItem.isCold = false;
+            targetItem.isExplosion = false; targetItem.isNuclear = false;
             targetItem.splash = 0.5;
 
             const isPair = (s, t, a, b) => (s.chem === a && t.chem === b) || (s.chem === b && t.chem === a);
 
-            // -- NEW EXPERIMENTS (26-30) --
             if (isPair(sourceItem, targetItem, 'h2o2', 'soap_liquid')) {
                 targetItem.chem = 'h2o2';
                 explTitle = '26. ยาสีฟันช้าง (ขั้น 1/2)';
@@ -752,7 +668,7 @@
                  explDesc = `<b>ผลการทดลอง:</b> โพแทสเซียมไอโอไดด์ (KI) ทำหน้าที่เร่งปฏิกิริยา ทำให้เกิดแก๊ส O₂ อย่างรวดเร็ว สบู่ดักจับแก๊สไว้กลายเป็นฟองโฟมปริมาณมหาศาลและคายความร้อน`;
                  confetti({ particleCount: 150, spread: 100, origin: { y: 0.6 }, colors: ['#fde68a', '#ffffff'] });
             } else if (isPair(sourceItem, targetItem, 'methylene_blue_colorless', 'oxygen_gas')) {
-                eq = 'Methylene Blue (ไม่มีสี) + O₂ → Methylene Blue (สีน้ำเงิน)';
+                eq = 'Methylene Blue (ไร้สี) + O₂ → Methylene Blue (สีน้ำเงิน)';
                 targetItem.chem = 'blue_bottle_active';
                 explTitle = '27. การทดลองขวดสีน้ำเงิน (Blue Bottle)';
                 explDesc = `<b>ผลการทดลอง:</b> ออกซิเจนที่ละลายลงไปทำปฏิกิริยาออกซิเดชันกับอินดิเคเตอร์ ทำให้สารละลายเปลี่ยนจากไม่มีสีเป็น<b>สีน้ำเงิน</b>`;
@@ -765,35 +681,28 @@
             } else if (isPair(sourceItem, targetItem, 'cucl2', 'al_foil')) {
                 eq = '2Al(s) + 3CuCl₂(aq) → 2AlCl₃(aq) + 3Cu(s)';
                 targetItem.chem = 'al_cu_rxn';
-                targetItem.hasPrecipitate = true;
-                targetItem.hasBubbles = true;
-                targetItem.isHot = true;
+                targetItem.hasPrecipitate = true; targetItem.hasBubbles = true; targetItem.isHot = true;
                 explTitle = '29. อะลูมิเนียมกับ CuCl₂';
-                explDesc = `<b>ผลการทดลอง:</b> ปฏิกิริยาแทนที่ อะลูมิเนียมเสียอิเล็กตรอนให้ทองแดง เกิดตะกอนทองแดงสีแดงอิฐ และเกิดความร้อนสูง (มีแก๊สไฮโดรเจนเกิดร่วมด้วยจากปฏิกิริยาข้างเคียง)`;
+                explDesc = `<b>ผลการทดลอง:</b> ปฏิกิริยาแทนที่ อะลูมิเนียมเสียอิเล็กตรอนให้ทองแดง เกิดตะกอนทองแดงสีแดงอิฐ และเกิดความร้อนสูง`;
                 confetti({ particleCount: 100, spread: 80, origin: { y: 0.6 }, colors: ['#14b8a6', '#b45309'] });
             } else if (isPair(sourceItem, targetItem, 'tollens', 'glucose')) {
                 eq = 'RCHO + 2[Ag(NH₃)₂]⁺ + 3OH⁻ → RCOO⁻ + 2Ag(s)↓ + 4NH₃ + 2H₂O';
                 targetItem.chem = 'silver_mirror_glass';
                 targetItem.hasPrecipitate = true;
                 explTitle = '30. ปฏิกิริยากระจกเงิน (Silver Mirror Test)';
-                explDesc = `<b>ผลการทดลอง:</b> กลูโคสรีดิวซ์ซิลเวอร์ไอออน (Ag⁺) ใน Tollens ให้กลายเป็นโลหะเงิน (Ag) ไปเคลือบที่ผิวของภาชนะ เกิดเป็นกระจกเงา`;
+                explDesc = `<b>ผลการทดลอง:</b> กลูโคสรีดิวซ์ซิลเวอร์ไอออน (Ag⁺) ให้กลายเป็นโลหะเงิน (Ag) เคลือบที่ผิวภาชนะเป็นกระจกเงา`;
                 confetti({ particleCount: 80, spread: 70, origin: { y: 0.6 }, colors: ['#d1d5db', '#f3f4f6'] });
-            } 
-            // -- ORIGINAL EXPERIMENTS (1-25) --
-            else if (isPair(sourceItem, targetItem, 'clf3', 'water') || isPair(sourceItem, targetItem, 'clf3', 'hcl')) {
-                eq = 'ClF₃(g) + 2H₂O(l) → 3HF(g) + HClO₂(aq) + ความร้อนสูง';
+            } else if (isPair(sourceItem, targetItem, 'clf3', 'water') || isPair(sourceItem, targetItem, 'clf3', 'hcl')) {
+                eq = 'ClF₃(g) + 2H₂O(l) → 3HF(g) + HClO₂(aq) + Heat';
                 targetItem.chem = 'explosion_plasma';
-                targetItem.hasBubbles = true;
-                targetItem.isHot = true;
-                targetItem.isExplosion = true;
+                targetItem.hasBubbles = true; targetItem.isHot = true; targetItem.isExplosion = true;
                 explTitle = '21. ปฏิกิริยาระเบิดของ ClF₃';
                 explDesc = `<b>ผลการทดลอง:</b> Chlorine Trifluoride เป็นตัวออกซิไดซ์รุนแรงที่สุด เมื่อโดนน้ำจะระเบิดทันที จุดความร้อนพุ่งสูงเกิน 2,400°C`;
                 confetti({ particleCount: 150, spread: 100, origin: { y: 0.5 }, colors: ['#ef4444', '#f59e0b', '#ffffff'] });
             } else if (isPair(sourceItem, targetItem, 'u235', 'neutron')) {
-                eq = '²³⁵U + n⁰ → ¹⁴¹Ba + ⁹²Kr + 3n⁰ + พลังงาน 200 MeV';
+                eq = '²³⁵U + n⁰ → ¹⁴¹Ba + ⁹²Kr + 3n⁰ + 200 MeV';
                 targetItem.chem = 'nuclear_glow';
-                targetItem.hasBubbles = true;
-                targetItem.isNuclear = true;
+                targetItem.hasBubbles = true; targetItem.isNuclear = true;
                 explTitle = '22. จำลองปฏิกิริยานิวเคลียร์ฟิชชัน';
                 explDesc = `<b>ผลการทดลอง:</b> นิวตรอนชนนิวเคลียส Uranium-235 เกิดการแตกตัวปล่อยพลังงานมหาศาล และแผ่รังสี`;
                 confetti({ particleCount: 150, spread: 120, origin: { y: 0.5 }, colors: ['#22c55e', '#a855f7', '#38bdf8'] });
@@ -809,8 +718,7 @@
                 explDesc = `<b>ผลการทดลอง:</b> เติมกรดจนสะเทิน สารละลายกลับมาใสไม่มีสี`;
             } else if (isPair(sourceItem, targetItem, 'alcl3', 'naoh')) {
                 eq = 'Al³⁺(aq) + 3OH⁻(aq) → Al(OH)₃↓';
-                targetItem.chem = 'white_ppt';
-                targetItem.hasPrecipitate = true;
+                targetItem.chem = 'white_ppt'; targetItem.hasPrecipitate = true;
                 explTitle = '16. ตะกอนแอมโฟเทอริก (ขั้น 1)';
                 explDesc = `<b>ผลการทดลอง:</b> เกิด<b>ตะกอนสีขาว</b>ของ Al(OH)₃<br><br><i>👉 ขั้นต่อไป: เติมเบสต่อ</i>`;
             } else if (isPair(sourceItem, targetItem, 'white_ppt', 'naoh')) {
@@ -820,8 +728,7 @@
                 explDesc = `<b>ผลการทดลอง:</b> เติมเบสมากเกินพอ ตะกอนสีขาวละลายกลับเป็นสารละลายใส`;
             } else if (isPair(sourceItem, targetItem, 'copt', 'naoh')) {
                 eq = 'Cu²⁺(aq) + 2OH⁻(aq) → Cu(OH)₂↓';
-                targetItem.chem = 'cu_oh2_ppt';
-                targetItem.hasPrecipitate = true;
+                targetItem.chem = 'cu_oh2_ppt'; targetItem.hasPrecipitate = true;
                 explTitle = '17. สารเชิงซ้อนสีน้ำเงิน (ขั้น 1)';
                 explDesc = `<b>ผลการทดลอง:</b> เกิด<b>ตะกอนสีฟ้าคราม</b><br><br><i>👉 ขั้นต่อไป: เติมแอมโมเนีย (NH₃)</i>`;
             } else if (isPair(sourceItem, targetItem, 'cu_oh2_ppt', 'nh3')) {
@@ -850,14 +757,11 @@
                 explDesc = `<b>ผลการทดลอง:</b> ฟลูออไรด์จับเหล็กได้ดีกว่า สีแดงจึงหายไป`;
             } else if (isPair(sourceItem, targetItem, 'pbno32', 'ki')) {
                 eq = 'Pb²⁺(aq) + 2I⁻(aq) → PbI₂↓';
-                targetItem.chem = 'yellow_ppt';
-                targetItem.hasPrecipitate = true;
+                targetItem.chem = 'yellow_ppt'; targetItem.hasPrecipitate = true;
                 explTitle = '20. ฝนทองคำ (ขั้น 1)';
                 explDesc = `<b>ผลการทดลอง:</b> เกิดตะกอนสีเหลือง PbI₂<br><br><i>👉 ขั้นต่อไป: เติมน้ำร้อน</i>`;
             } else if (isPair(sourceItem, targetItem, 'yellow_ppt', 'hot_water')) {
-                targetItem.chem = 'water';
-                targetItem.isHot = true;
-                targetItem.hasPrecipitate = false;
+                targetItem.chem = 'water'; targetItem.isHot = true; targetItem.hasPrecipitate = false;
                 explTitle = '20. การละลายฝนทองคำ (ขั้น 2)';
                 explDesc = `<b>ผลการทดลอง:</b> เมื่อร้อนขึ้น ตะกอนจะละลายกลับไปเป็นสารละลายใส`;
             } else if (isPair(sourceItem, targetItem, 'glucose', 'benedict')) {
@@ -866,9 +770,7 @@
                 explDesc = `<b>ผลการทดลอง:</b> ยังไม่เกิดการเปลี่ยนแปลง<br><br><i>👉 ขั้นต่อไป: เติมน้ำร้อน</i>`;
             } else if (isPair(sourceItem, targetItem, 'blue_mix_sugar', 'hot_water')) {
                 eq = 'R-CHO + 2Cu²⁺ + 5OH⁻ → R-COO⁻ + Cu₂O↓ + 3H₂O';
-                targetItem.chem = 'brick_red_ppt';
-                targetItem.hasPrecipitate = true;
-                targetItem.isHot = true;
+                targetItem.chem = 'brick_red_ppt'; targetItem.hasPrecipitate = true; targetItem.isHot = true;
                 explTitle = '23. เกิดตะกอนสีแดงอิฐ (ขั้น 2)';
                 explDesc = `<b>ผลการทดลอง:</b> เมื่อร้อน Cu²⁺ จะถูกรีดิวซ์กลายเป็นตะกอนสีแดงอิฐ (Cu₂O)`;
             } else if (isPair(sourceItem, targetItem, 'starch', 'iodine_sol')) {
@@ -888,42 +790,33 @@
                 explTitle = '25. ทดสอบโปรตีน';
                 explDesc = `<b>ผลการทดลอง:</b> สารละลายสีฟ้า ยังไม่เกิดปฏิกิริยา<br><br><i>👉 ขั้นต่อไป: เติม NaOH</i>`;
             } else if (isPair(sourceItem, targetItem, 'cao', 'water')) {
-                eq = 'CaO(s) + H₂O(l) → Ca(OH)₂(aq) + ความร้อน';
-                targetItem.chem = 'caoh2';
-                targetItem.hasBubbles = true;
-                targetItem.isHot = true;
+                eq = 'CaO(s) + H₂O(l) → Ca(OH)₂(aq) + Heat';
+                targetItem.chem = 'caoh2'; targetItem.hasBubbles = true; targetItem.isHot = true;
                 explTitle = '11. ปฏิกิริยาคายความร้อน';
                 explDesc = `<b>ผลการทดลอง:</b> คายความร้อนมหาศาลจนเดือด`;
             } else if (isPair(sourceItem, targetItem, 'baoh2', 'nh4no3')) {
                 eq = 'Ba(OH)₂·8H₂O(s) + 2NH₄NO₃(s) → Ba(NO₃)₂ + 2NH₃↑ + 10H₂O';
-                targetItem.chem = 'cold_solution';
-                targetItem.hasBubbles = true;
-                targetItem.isCold = true;
+                targetItem.chem = 'cold_solution'; targetItem.hasBubbles = true; targetItem.isCold = true;
                 explTitle = '12. ปฏิกิริยาดูดความร้อน';
                 explDesc = `<b>ผลการทดลอง:</b> ดูดความร้อน อุณหภูมิลดต่ำลงมาก`;
             } else if (isPair(sourceItem, targetItem, 'oil', 'naoh')) {
                 eq = 'Fat + 3NaOH → Glycerol + 3Soap';
-                targetItem.chem = 'soap';
-                targetItem.hasBubbles = true;
-                targetItem.isHot = true;
+                targetItem.chem = 'soap'; targetItem.hasBubbles = true; targetItem.isHot = true;
                 explTitle = '13. ปฏิกิริยาสปอนนิฟิเคชัน';
                 explDesc = `<b>ผลการทดลอง:</b> เกิดเนื้อสบู่สีขาวขุ่น`;
             } else if (isPair(sourceItem, targetItem, 'chlorophyll', 'nahco3')) {
-                eq = '6CO₂ + 6H₂O + แสงแดด → C₆H₁₂O₆ + 6O₂↑';
-                targetItem.chem = 'glucose_o2';
-                targetItem.hasBubbles = true;
+                eq = '6CO₂ + 6H₂O + Sunlight → C₆H₁₂O₆ + 6O₂↑';
+                targetItem.chem = 'glucose_o2'; targetItem.hasBubbles = true;
                 explTitle = '14. การสังเคราะห์ด้วยแสง';
                 explDesc = `<b>ผลการทดลอง:</b> เกิดฟองแก๊สออกซิเจน`;
             } else if (isPair(sourceItem, targetItem, 'caco3', 'hcl')) {
                 eq = 'CaCO₃ + 2HCl → CaCl₂ + H₂O + CO₂↑';
-                targetItem.chem = 'water';
-                targetItem.hasBubbles = true;
+                targetItem.chem = 'water'; targetItem.hasBubbles = true;
                 explTitle = '10. กรดกับหินปูน';
                 explDesc = `<b>ผลการทดลอง:</b> หินปูนละลายเกิดฟองแก๊ส CO₂`;
             } else if (isPair(sourceItem, targetItem, 'cu', 'hno3')) {
                 eq = 'Cu + 4HNO₃ → Cu(NO₃)₂ + 2NO₂↑ + 2H₂O';
-                targetItem.chem = 'green_gas_solution';
-                targetItem.hasBubbles = true;
+                targetItem.chem = 'green_gas_solution'; targetItem.hasBubbles = true;
                 explTitle = '9. กรดไนตริกกับทองแดง';
                 explDesc = `<b>ผลการทดลอง:</b> สารละลายสีเขียว เกิดแก๊ส NO₂`;
             } else if (isPair(sourceItem, targetItem, 'chromate', 'hcl')) {
@@ -933,32 +826,27 @@
                 explDesc = `<b>ผลการทดลอง:</b> เปลี่ยนจากสีเหลืองเป็นส้ม`;
             } else if (isPair(sourceItem, targetItem, 'zn', 'hcl')) {
                 eq = 'Zn + 2HCl → ZnCl₂ + H₂↑';
-                targetItem.chem = 'hcl';
-                targetItem.hasBubbles = true;
+                targetItem.chem = 'hcl'; targetItem.hasBubbles = true;
                 explTitle = '4. ปฏิกิริยากรดกับโลหะ';
                 explDesc = `<b>ผลการทดลอง:</b> เกิดฟองแก๊สไฮโดรเจน`;
             } else if (isPair(sourceItem, targetItem, 'bacl2', 'copt')) {
                 eq = 'BaCl₂ + CuSO₄ → CuCl₂ + BaSO₄↓';
-                targetItem.chem = 'copt';
-                targetItem.hasPrecipitate = true;
+                targetItem.chem = 'copt'; targetItem.hasPrecipitate = true;
                 explTitle = '5. ตะกอนแบเรียมซัลเฟต';
                 explDesc = `<b>ผลการทดลอง:</b> เกิดตะกอนสีขาว BaSO₄`;
             } else if (isPair(sourceItem, targetItem, 'nh4cl', 'naoh')) {
                 eq = 'NH₄Cl + NaOH → NaCl + H₂O + NH₃↑';
-                targetItem.chem = 'water';
-                targetItem.hasBubbles = true;
+                targetItem.chem = 'water'; targetItem.hasBubbles = true;
                 explTitle = '6. เกิดแก๊สแอมโมเนีย';
                 explDesc = `<b>ผลการทดลอง:</b> เกิดแก๊สแอมโมเนียกลิ่นฉุน`;
             } else if (isPair(sourceItem, targetItem, 'hcl', 'naoh')) {
                 eq = 'HCl + NaOH → NaCl + H₂O';
-                targetItem.chem = 'water';
-                targetItem.hasBubbles = true;
+                targetItem.chem = 'water'; targetItem.hasBubbles = true;
                 explTitle = '1. ปฏิกิริยาสะเทิน';
                 explDesc = `<b>ผลการทดลอง:</b> สะเทินเกิดน้ำและเกลือ (pH 7)`;
             } else if (isPair(sourceItem, targetItem, 'kmno4', 'hcl')) {
                 eq = '2KMnO₄ + 16HCl → 2KCl + 2MnCl₂ + 5Cl₂↑ + 8H₂O';
-                targetItem.chem = 'water';
-                targetItem.hasBubbles = true;
+                targetItem.chem = 'water'; targetItem.hasBubbles = true;
                 explTitle = '3. ปฏิกิริยารีดอกซ์';
                 explDesc = `<b>ผลการทดลอง:</b> สีม่วงจางหายไป เกิดแก๊ส Cl₂`;
             } else {
@@ -967,7 +855,6 @@
                 explDesc = `<b>ผลการทดลอง:</b> ผสมรวมกันตามสัดส่วนปริมาตร`;
             }
 
-            // จัดรูปแบบแสดงสมการเคมีให้อ่านง่ายสีม่วง
             if (eq !== '') {
                 explDesc = `<div style="color: #c084fc; padding-bottom: 8px; border-bottom: 1px dashed rgba(255,255,255,0.2); margin-bottom: 8px;"><b>สมการ:</b> <span style="font-family: monospace; font-size: 0.85rem;">${eq}</span></div>` + explDesc;
             }
@@ -979,12 +866,12 @@
             const rect = canvas.getBoundingClientRect();
             const pointerX = clientX - rect.left;
             const pointerY = clientY - rect.top;
+            const scale = getScale();
 
-            // เช็คว่ากดโดนหูหิ้วแก้ว (Handle) สำหรับลากเทหรือไม่
             const handleHit = apparatusList.slice().reverse().find(item => {
                 const handleX = item.x;
-                const handleY = item.y - 235;
-                return Math.hypot(pointerX - handleX, pointerY - handleY) <= 50;
+                const handleY = item.y - (235 * scale);
+                return Math.hypot(pointerX - handleX, pointerY - handleY) <= (50 * scale);
             });
 
             if (handleHit) {
@@ -992,10 +879,9 @@
                 return;
             }
 
-            // เช็คว่ากดโดนตัวขวดบีกเกอร์หรือป้ายชื่อที่อยู่ด้านล่างหรือไม่ (ปรับ hitbox รองรับป้ายถึง y + 95)
             draggingItem = apparatusList.slice().reverse().find(item => {
-                return pointerX >= item.x - 90 && pointerX <= item.x + 90 &&
-                       pointerY >= item.y - 240 && pointerY <= item.y + 95;
+                return pointerX >= item.x - (90 * scale) && pointerX <= item.x + (90 * scale) &&
+                       pointerY >= item.y - (240 * scale) && pointerY <= item.y + (95 * scale); // Includes label
             });
 
             if (draggingItem) {
@@ -1012,7 +898,9 @@
 
             if (draggingItem) {
                 draggingItem.x = currentPointerX - dragOffsetX;
-                draggingItem.y = currentPointerY - dragOffsetY;
+                // draggingItem.y = currentPointerY - dragOffsetY; // Remove this to lock vertically on table, OR keep for lifting
+                // For responsive stability, locking to table (X-only drag) might be better on phones, but let's keep 2D freedom.
+                draggingItem.y = currentPointerY - dragOffsetY; 
             }
         }
 
@@ -1021,11 +909,12 @@
                 const rect = canvas.getBoundingClientRect();
                 const pointerX = clientX - rect.left;
                 const pointerY = clientY - rect.top;
+                const scale = getScale();
 
                 const targetItem = apparatusList.find(item => {
                     return item.id !== connectingSource.id &&
-                           pointerX >= item.x - 90 && pointerX <= item.x + 90 &&
-                           pointerY >= item.y - 240 && pointerY <= item.y + 95;
+                           pointerX >= item.x - (90 * scale) && pointerX <= item.x + (90 * scale) &&
+                           pointerY >= item.y - (240 * scale) && pointerY <= item.y + (95 * scale);
                 });
 
                 if (targetItem) {
@@ -1036,95 +925,62 @@
             draggingItem = null;
         }
 
-        canvas.addEventListener('pointerdown', (e) => {
-            e.preventDefault();
-            canvas.setPointerCapture(e.pointerId);
-            handlePointerDown(e.clientX, e.clientY);
-        });
-        canvas.addEventListener('pointermove', (e) => {
-            e.preventDefault();
-            handlePointerMove(e.clientX, e.clientY);
-        });
-        canvas.addEventListener('pointerup', (e) => {
-            e.preventDefault();
-            canvas.releasePointerCapture(e.pointerId);
-            handlePointerUp(e.clientX, e.clientY);
-        });
-        canvas.addEventListener('pointercancel', (e) => {
-            e.preventDefault();
-            canvas.releasePointerCapture(e.pointerId);
-            handlePointerUp(e.clientX, e.clientY);
-        });
+        canvas.addEventListener('pointerdown', (e) => { e.preventDefault(); canvas.setPointerCapture(e.pointerId); handlePointerDown(e.clientX, e.clientY); });
+        canvas.addEventListener('pointermove', (e) => { e.preventDefault(); handlePointerMove(e.clientX, e.clientY); });
+        canvas.addEventListener('pointerup', (e) => { e.preventDefault(); canvas.releasePointerCapture(e.pointerId); handlePointerUp(e.clientX, e.clientY); });
+        canvas.addEventListener('pointercancel', (e) => { e.preventDefault(); canvas.releasePointerCapture(e.pointerId); handlePointerUp(e.clientX, e.clientY); });
 
         function drawLab() {
             const displayWidth = container.clientWidth;
             const displayHeight = container.clientHeight;
+            const scale = getScale();
             ctx.clearRect(0, 0, displayWidth, displayHeight);
 
-            // ความสูงของหน้าโต๊ะ (Table Top) ลอยสูงขึ้นมารับตัวแก้ว
-            const tableSurfaceY = displayHeight - 180; 
+            // Responsive table height
+            const tableSurfaceY = getTableY(); 
 
-            // วาดแสงสะท้อนจากโต๊ะขึ้นไปบนฉากหลัง
+            // Table Background Glow & Outline
             let glow = ctx.createLinearGradient(0, tableSurfaceY - 40, 0, tableSurfaceY);
             glow.addColorStop(0, 'rgba(56, 189, 248, 0)');
             glow.addColorStop(1, 'rgba(56, 189, 248, 0.15)');
-            ctx.fillStyle = glow;
-            ctx.fillRect(0, tableSurfaceY - 40, displayWidth, 40);
+            ctx.fillStyle = glow; ctx.fillRect(0, tableSurfaceY - 40, displayWidth, 40);
 
-            // วาดเส้นขอบไฟ Neon โต๊ะ
-            ctx.strokeStyle = '#38bdf8';
-            ctx.lineWidth = 3;
-            ctx.shadowColor = '#38bdf8';
-            ctx.shadowBlur = 15;
-            ctx.beginPath(); ctx.moveTo(0, tableSurfaceY); ctx.lineTo(displayWidth, tableSurfaceY); ctx.stroke();
-            ctx.shadowBlur = 0;
+            ctx.strokeStyle = '#38bdf8'; ctx.lineWidth = 3; ctx.shadowColor = '#38bdf8'; ctx.shadowBlur = 15;
+            ctx.beginPath(); ctx.moveTo(0, tableSurfaceY); ctx.lineTo(displayWidth, tableSurfaceY); ctx.stroke(); ctx.shadowBlur = 0;
 
-            // วาดความหนาของแผ่นโต๊ะ (Table Top Thickness)
-            ctx.fillStyle = '#0f172a';
-            ctx.fillRect(0, tableSurfaceY, displayWidth, 15);
-
-            // วาดแผงหน้าโต๊ะทอดยาวลงพื้น
+            ctx.fillStyle = '#0f172a'; ctx.fillRect(0, tableSurfaceY, displayWidth, 15);
             let tableFront = ctx.createLinearGradient(0, tableSurfaceY + 15, 0, displayHeight);
-            tableFront.addColorStop(0, '#060911');
-            tableFront.addColorStop(1, '#020408');
-            ctx.fillStyle = tableFront;
-            ctx.fillRect(0, tableSurfaceY + 15, displayWidth, displayHeight - (tableSurfaceY + 15));
+            tableFront.addColorStop(0, '#060911'); tableFront.addColorStop(1, '#020408');
+            ctx.fillStyle = tableFront; ctx.fillRect(0, tableSurfaceY + 15, displayWidth, displayHeight - (tableSurfaceY + 15));
 
             if (connectingSource) {
-                const streamColor = chemColors[connectingSource.chem] || '#38bdf8';
                 const isDragLeft = currentPointerX < connectingSource.x;
                 const flip = isDragLeft ? 1 : -1; 
                 
                 let targetAngle = (currentPointerX - connectingSource.x) * 0.003;
                 targetAngle = Math.min(Math.max(targetAngle, -0.6), 0.6);
 
+                const streamColor = chemColors[connectingSource.chem] || '#38bdf8';
                 const localSpoutX = -88 * flip; 
                 const localSpoutY = -225;
 
                 const cosA = Math.cos(targetAngle);
                 const sinA = Math.sin(targetAngle);
-                const trueSpoutX = connectingSource.x + (localSpoutX * cosA) - (localSpoutY * sinA);
-                const trueSpoutY = connectingSource.y + (localSpoutX * sinA) + (localSpoutY * cosA);
+                
+                // Scale is factored into the vector projection
+                const trueSpoutX = connectingSource.x + (localSpoutX * cosA * scale) - (localSpoutY * sinA * scale);
+                const trueSpoutY = connectingSource.y + (localSpoutX * sinA * scale) + (localSpoutY * cosA * scale);
 
-                ctx.strokeStyle = streamColor;
-                ctx.lineWidth = 8 + Math.sin(Date.now() * 0.01) * 2;
-                ctx.lineCap = 'round';
-                ctx.shadowColor = streamColor;
-                ctx.shadowBlur = 15;
-                ctx.beginPath();
-                ctx.moveTo(trueSpoutX, trueSpoutY);
+                ctx.strokeStyle = streamColor; ctx.lineWidth = (8 + Math.sin(Date.now() * 0.01) * 2) * scale;
+                ctx.lineCap = 'round'; ctx.shadowColor = streamColor; ctx.shadowBlur = 15;
                 
-                const midX = trueSpoutX + ((currentPointerX - trueSpoutX) * 0.4);
-                const midY = trueSpoutY - Math.abs(currentPointerX - trueSpoutX) * 0.1;
-                ctx.quadraticCurveTo(midX, midY, currentPointerX, currentPointerY);
-                ctx.stroke();
+                ctx.beginPath(); ctx.moveTo(trueSpoutX, trueSpoutY);
+                const cpX = trueSpoutX + ((currentPointerX - trueSpoutX) * 0.4);
+                const cpY = trueSpoutY - Math.abs(currentPointerX - trueSpoutX) * 0.1;
+                ctx.quadraticCurveTo(cpX, cpY, currentPointerX, currentPointerY); ctx.stroke();
                 
-                ctx.strokeStyle = 'rgba(255,255,255,0.4)';
-                ctx.lineWidth = 3;
-                ctx.beginPath();
-                ctx.moveTo(trueSpoutX, trueSpoutY);
-                ctx.quadraticCurveTo(midX, midY, currentPointerX, currentPointerY);
-                ctx.stroke();
+                ctx.strokeStyle = 'rgba(255,255,255,0.4)'; ctx.lineWidth = 3 * scale;
+                ctx.beginPath(); ctx.moveTo(trueSpoutX, trueSpoutY); ctx.quadraticCurveTo(cpX, cpY, currentPointerX, currentPointerY); ctx.stroke();
                 ctx.shadowBlur = 0; 
             }
 
@@ -1136,34 +992,35 @@
                     item.steamParticles = []; item.splash = 0; item.sedimentTime = 0;
                 }
 
-                let vx = item.x - item.lastX;
-                item.lastX = item.x;
+                // Spring physics for sloshing
+                let vx = item.x - item.lastX; item.lastX = item.x;
                 item.sloshV += (vx * -0.015 - item.slosh) * 0.12; 
                 item.sloshV *= 0.85; 
-                item.slosh += item.sloshV;
-                item.slosh = Math.max(-0.5, Math.min(0.5, item.slosh));
+                item.slosh += item.sloshV; item.slosh = Math.max(-0.5, Math.min(0.5, item.slosh));
                 
                 if (item.splash > 0) item.splash -= 0.02;
                 if (item.hasPrecipitate) item.sedimentTime += 0.01; else item.sedimentTime = 0;
 
-                const yDistToTable = Math.abs(item.y - (tableSurfaceY + 15));
-                if (yDistToTable < 30) { 
-                    const shadowScale = 1 - (yDistToTable / 30);
+                // Contact Shadow
+                const targetYForShadow = getBeakerY();
+                const yDistToTable = Math.abs(item.y - targetYForShadow);
+                if (yDistToTable < 50) { 
+                    const shadowScale = 1 - (yDistToTable / 50);
                     ctx.fillStyle = `rgba(0, 0, 0, ${0.8 * shadowScale})`;
-                    ctx.beginPath(); ctx.ellipse(item.x, item.y + 4, 75, 12, 0, 0, Math.PI*2); ctx.fill();
-                    
+                    ctx.beginPath(); ctx.ellipse(item.x, item.y + (4 * scale), 75 * scale, 12 * scale, 0, 0, Math.PI*2); ctx.fill();
                     ctx.fillStyle = `rgba(0, 0, 0, ${0.4 * shadowScale})`;
-                    ctx.beginPath(); ctx.ellipse(item.x, item.y + 4, 110, 25, 0, 0, Math.PI*2); ctx.fill();
+                    ctx.beginPath(); ctx.ellipse(item.x, item.y + (4 * scale), 110 * scale, 25 * scale, 0, 0, Math.PI*2); ctx.fill();
                 }
 
+                // Setup local transform
                 ctx.save();
                 ctx.translate(item.x, item.y);
+                ctx.scale(scale, scale); // Apply dynamic global scaling
 
                 const isSelected = selectedItem === item;
                 const isPouring = (connectingSource === item);
                 
-                let flip = 1;
-                let targetAngle = 0;
+                let flip = 1; let targetAngle = 0;
                 if (isPouring) {
                     flip = currentPointerX < item.x ? 1 : -1; 
                     targetAngle = (currentPointerX - item.x) * 0.003;
@@ -1187,28 +1044,16 @@
                 let badgeW = Math.max(120, maxContentW + 24); 
                 let badgeH = hasFormula ? 62 : 48;
                 let badgeX = -badgeW / 2;
-                
-                // ย้ายป้ายมาด้านล่างบีกเกอร์ (ใต้ฐานแก้วลงมา 25 พิกเซล)
                 let badgeY = 25; 
 
-                // วาดแผ่นป้ายทึบแสง
                 ctx.fillStyle = '#0f172a';
                 ctx.strokeStyle = isSelected ? '#38bdf8' : 'rgba(255, 255, 255, 0.3)';
                 ctx.lineWidth = 1.5;
-                
-                if (ctx.roundRect) {
-                    ctx.beginPath(); ctx.roundRect(badgeX, badgeY, badgeW, badgeH, 10);
-                    ctx.fill(); ctx.stroke();
-                } else {
-                    ctx.fillRect(badgeX, badgeY, badgeW, badgeH); ctx.strokeRect(badgeX, badgeY, badgeW, badgeH);
-                }
+                if (ctx.roundRect) { ctx.beginPath(); ctx.roundRect(badgeX, badgeY, badgeW, badgeH, 10); ctx.fill(); ctx.stroke();
+                } else { ctx.fillRect(badgeX, badgeY, badgeW, badgeH); ctx.strokeRect(badgeX, badgeY, badgeW, badgeH); }
 
-                ctx.shadowColor = 'rgba(0,0,0,0.8)';
-                ctx.shadowBlur = 4;
-                
-                // บังคับพิมพ์ชิดซ้ายแล้วคำนวณจุดกึ่งกลางเอง เพื่อแก้ปัญหาฟอนต์เบี้ยวใน iPad/iPhone Safari
-                ctx.textAlign = 'left';
-                ctx.textBaseline = 'top';
+                ctx.shadowColor = 'rgba(0,0,0,0.8)'; ctx.shadowBlur = 4;
+                ctx.textAlign = 'left'; ctx.textBaseline = 'top'; // Bypass Safari centering bug
 
                 if (hasFormula) {
                     ctx.font = '600 11.5px "Prompt", sans-serif'; ctx.fillStyle = '#ffffff';
@@ -1240,275 +1085,130 @@
                 innerG.addColorStop(0.85, 'rgba(255,255,255,0.03)');
                 innerG.addColorStop(1, 'rgba(0,0,0,0.4)');
                 ctx.fillStyle = innerG;
-                ctx.beginPath();
-                ctx.moveTo(-75, -225); ctx.lineTo(-75, 0);
+                ctx.beginPath(); ctx.moveTo(-75, -225); ctx.lineTo(-75, 0);
                 ctx.ellipse(0, 0, 75, 12, 0, Math.PI, 0, true);
-                ctx.lineTo(75, -225);
-                ctx.ellipse(0, -225, 75, 12, 0, 0, Math.PI, true);
-                ctx.fill();
-                ctx.shadowBlur = 0;
+                ctx.lineTo(75, -225); ctx.ellipse(0, -225, 75, 12, 0, 0, Math.PI, true);
+                ctx.fill(); ctx.shadowBlur = 0;
 
                 const liquidHeight = (item.vol / item.maxVol) * 195;
                 if (liquidHeight > 0) {
                     ctx.save();
-                    
-                    // คลิปปิ้งมาสก์ให้อยู่ในขอบเขตบีกเกอร์
-                    ctx.beginPath();
-                    ctx.moveTo(-73, -225); ctx.lineTo(-73, 0);
-                    ctx.ellipse(0, 0, 73, 11, 0, Math.PI, 0, true);
-                    ctx.lineTo(73, -225);
-                    ctx.clip();
+                    ctx.beginPath(); ctx.moveTo(-73, -225); ctx.lineTo(-73, 0); ctx.ellipse(0, 0, 73, 11, 0, Math.PI, 0, true); ctx.lineTo(73, -225); ctx.clip();
 
                     const netAngle = - (targetAngle * flip) + (item.slosh * flip); 
-                    const yOffsetL = -73 * Math.tan(netAngle);
-                    const yOffsetR = 73 * Math.tan(netAngle);
-
-                    // คำนวณการยืดวงรีผิวน้ำ (Stretch) ชดเชยการเอียง เพื่อให้ชนขอบแก้วเสมอ
+                    const yOffsetL = -73 * Math.tan(netAngle); const yOffsetR = 73 * Math.tan(netAngle);
                     const cosAngle = Math.max(0.1, Math.cos(netAngle));
                     const surfaceRadiusX = 73 / cosAngle;
-                    const innerRadiusX = 71 / cosAngle;
 
                     ctx.fillStyle = chemColors[item.chem] || 'rgba(56, 189, 248, 0.55)';
-                    
-                    // ตัวของเหลว (Liquid Body with Volumetric Shadow)
-                    ctx.beginPath();
-                    ctx.moveTo(-73, -liquidHeight + yOffsetL);
-                    ctx.lineTo(-73, 0);
-                    ctx.ellipse(0, 0, 73, 11, 0, Math.PI, 0, true);
-                    ctx.lineTo(73, -liquidHeight + yOffsetR);
-                    ctx.fill();
+                    ctx.beginPath(); ctx.moveTo(-73, -liquidHeight + yOffsetL); ctx.lineTo(-73, 0);
+                    ctx.ellipse(0, 0, 73, 11, 0, Math.PI, 0, true); ctx.lineTo(73, -liquidHeight + yOffsetR); ctx.fill();
 
-                    // เพิ่มเลเยอร์ความลึก 3 มิติให้ของเหลว
                     let volShadow = ctx.createLinearGradient(-73, 0, 73, 0);
-                    volShadow.addColorStop(0, 'rgba(0,0,0,0.5)');
-                    volShadow.addColorStop(0.3, 'rgba(255,255,255,0.08)');
-                    volShadow.addColorStop(0.7, 'rgba(255,255,255,0.08)');
-                    volShadow.addColorStop(1, 'rgba(0,0,0,0.6)');
-                    ctx.fillStyle = volShadow;
-                    ctx.fill();
+                    volShadow.addColorStop(0, 'rgba(0,0,0,0.5)'); volShadow.addColorStop(0.3, 'rgba(255,255,255,0.08)');
+                    volShadow.addColorStop(0.7, 'rgba(255,255,255,0.08)'); volShadow.addColorStop(1, 'rgba(0,0,0,0.6)');
+                    ctx.fillStyle = volShadow; ctx.fill();
 
-                    // === ส่วนที่แก้ไขผิวน้ำ (Meniscus & Surface Depth) ===
-                    const surfaceColor = chemColors[item.chem] || 'rgba(56, 189, 248, 0.55)';
-
+                    // Liquid Meniscus Surface
                     ctx.save();
-                    // ย้ายพิกัดและหมุนตามความเอียงของผิวน้ำ เพื่อให้แสงและเงาเรียงตัวเพอร์เฟกต์
-                    ctx.translate(0, -liquidHeight);
-                    ctx.rotate(netAngle);
+                    ctx.translate(0, -liquidHeight); ctx.rotate(netAngle);
+                    
+                    const surfaceColor = chemColors[item.chem] || 'rgba(56, 189, 248, 0.55)';
+                    ctx.beginPath(); ctx.ellipse(0, 0, surfaceRadiusX, 11, 0, 0, Math.PI * 2);
+                    ctx.fillStyle = surfaceColor; ctx.fill();
 
-                    // 1. สีพื้นของผิวน้ำ (Solid Base)
-                    ctx.beginPath();
-                    ctx.ellipse(0, 0, surfaceRadiusX, 11, 0, 0, Math.PI * 2);
-                    ctx.fillStyle = surfaceColor;
-                    ctx.fill();
-
-                    // 2. เติมเงาและแสงสะท้อนไล่ระดับแบบนุ่มนวล (Smooth Gradient Blend)
-                    // ไล่สีจากหลัง (มืด) ไปหน้า (สว่าง) ขจัดปัญหาเส้นตัดแบ่งสี
                     let surfaceShine = ctx.createLinearGradient(0, -11, 0, 11);
-                    surfaceShine.addColorStop(0, 'rgba(0, 0, 0, 0.35)');       // ขอบหลังมืดลึก
-                    surfaceShine.addColorStop(0.35, 'rgba(255, 255, 255, 0)'); // กลางใส กลมกลืนไปกับสีน้ำ
-                    surfaceShine.addColorStop(0.75, 'rgba(255, 255, 255, 0.15)'); // เริ่มสว่างนวลๆ ที่ขอบหน้า
-                    surfaceShine.addColorStop(1, 'rgba(255, 255, 255, 0.6)'); // ขอบหน้าสว่างสะท้อนแสงไฟ
-                    ctx.fillStyle = surfaceShine;
-                    ctx.fill();
+                    surfaceShine.addColorStop(0, 'rgba(0, 0, 0, 0.35)'); surfaceShine.addColorStop(0.35, 'rgba(255, 255, 255, 0)'); 
+                    surfaceShine.addColorStop(0.75, 'rgba(255, 255, 255, 0.15)'); surfaceShine.addColorStop(1, 'rgba(255, 255, 255, 0.6)');
+                    ctx.fillStyle = surfaceShine; ctx.fill();
 
-                    // 3. เส้นวงแหวนความลึกด้านในแบบนุ่มนวล (Soft Inner Glow) แทนเส้นทื่อๆ
-                    ctx.beginPath();
-                    ctx.ellipse(0, 0, surfaceRadiusX - 1.5, 9.5, 0, 0, Math.PI * 2);
+                    ctx.beginPath(); ctx.ellipse(0, 0, surfaceRadiusX - 1.5, 9.5, 0, 0, Math.PI * 2);
                     let innerGlow = ctx.createLinearGradient(0, -9.5, 0, 9.5);
-                    innerGlow.addColorStop(0, 'rgba(0, 0, 0, 0.15)');
-                    innerGlow.addColorStop(0.5, 'rgba(255, 255, 255, 0)');
-                    innerGlow.addColorStop(1, 'rgba(255, 255, 255, 0.3)');
-                    ctx.lineWidth = 1.5;
-                    ctx.strokeStyle = innerGlow;
-                    ctx.stroke();
+                    innerGlow.addColorStop(0, 'rgba(0, 0, 0, 0.15)'); innerGlow.addColorStop(0.5, 'rgba(255, 255, 255, 0)'); innerGlow.addColorStop(1, 'rgba(255, 255, 255, 0.3)');
+                    ctx.lineWidth = 1.5; ctx.strokeStyle = innerGlow; ctx.stroke();
 
-                    // 4. แรงตึงผิว (Meniscus) - ขอบหลัง (เงาดำ)
-                    ctx.beginPath();
-                    ctx.ellipse(0, 0, surfaceRadiusX, 11, 0, Math.PI, 0, false);
-                    ctx.lineWidth = 1.2;
-                    ctx.strokeStyle = 'rgba(0, 0, 0, 0.35)';
-                    ctx.stroke();
+                    ctx.beginPath(); ctx.ellipse(0, 0, surfaceRadiusX, 11, 0, Math.PI, 0, false);
+                    ctx.lineWidth = 1.2; ctx.strokeStyle = 'rgba(0, 0, 0, 0.35)'; ctx.stroke();
 
-                    // 5. แรงตึงผิว (Meniscus) - ขอบหน้า (สว่างกระจ่าง)
-                    ctx.beginPath();
-                    ctx.ellipse(0, 0, surfaceRadiusX, 11, 0, 0, Math.PI, false);
-                    ctx.lineWidth = 2.5;
-                    ctx.strokeStyle = 'rgba(255, 255, 255, 0.85)';
-                    ctx.stroke();
-
+                    ctx.beginPath(); ctx.ellipse(0, 0, surfaceRadiusX, 11, 0, 0, Math.PI, false);
+                    ctx.lineWidth = 2.5; ctx.strokeStyle = 'rgba(255, 255, 255, 0.85)'; ctx.stroke();
                     ctx.restore();
-                    // ===============================================
                     
                     if (item.splash > 0) {
                         ctx.fillStyle = 'rgba(255,255,255,0.6)';
-                        for(let s=0; s<3; s++) {
-                            ctx.beginPath();
-                            ctx.arc((s-1)*15, -liquidHeight - (Math.sin(item.splash*Math.PI)*15) + (s*3), item.splash*4, 0, Math.PI*2);
-                            ctx.fill();
-                        }
+                        for(let s=0; s<3; s++) { ctx.beginPath(); ctx.arc((s-1)*15, -liquidHeight - (Math.sin(item.splash*Math.PI)*15) + (s*3), item.splash*4, 0, Math.PI*2); ctx.fill(); }
                     }
                     ctx.restore();
                 }
 
                 if (item.hasPrecipitate) {
                     ctx.save();
-                    ctx.beginPath();
-                    ctx.moveTo(-73, -liquidHeight); ctx.lineTo(-73, 0);
-                    ctx.ellipse(0, 0, 73, 11, 0, Math.PI, 0, true);
-                    ctx.lineTo(73, -liquidHeight);
-                    ctx.clip();
-
-                    const isYellow = (item.chem === 'yellow_ppt');
-                    const isBlue = (item.chem === 'cu_oh2_ppt');
-                    const isRed = (item.chem === 'brick_red_ppt');
-                    const mainColor = isYellow ? '250, 204, 21' : (isBlue ? '56, 189, 248' : (isRed ? '220, 38, 38' : '241, 245, 249'));
-                    const darkColor = isYellow ? '180, 120, 10' : (isBlue ? '14, 116, 144' : (isRed ? '153, 27, 27' : '148, 163, 184'));
-
-                    const settleRatio = Math.min(1.0, item.sedimentTime * 0.2);
-                    
+                    ctx.beginPath(); ctx.moveTo(-73, -liquidHeight); ctx.lineTo(-73, 0); ctx.ellipse(0, 0, 73, 11, 0, Math.PI, 0, true); ctx.lineTo(73, -liquidHeight); ctx.clip();
+                    const isYel = (item.chem === 'yellow_ppt'); const isBl = (item.chem === 'cu_oh2_ppt'); const isRd = (item.chem === 'brick_red_ppt');
+                    const mainC = isYel ? '250, 204, 21' : (isBl ? '56, 189, 248' : (isRd ? '220, 38, 38' : '241, 245, 249'));
+                    const darkC = isYel ? '180, 120, 10' : (isBl ? '14, 116, 144' : (isRd ? '153, 27, 27' : '148, 163, 184'));
+                    const settle = Math.min(1.0, item.sedimentTime * 0.2);
                     const cloudGrad = ctx.createLinearGradient(0, 0, 0, -liquidHeight);
-                    cloudGrad.addColorStop(0, `rgba(${mainColor}, ${0.8 - (settleRatio*0.5)})`);
-                    cloudGrad.addColorStop(1, `rgba(${mainColor}, 0.0)`);
-                    ctx.fillStyle = cloudGrad;
-                    ctx.fillRect(-73, -liquidHeight, 146, liquidHeight);
-
-                    const baseHeap = 10 + (25 * settleRatio);
-                    const sedimentGrad = ctx.createLinearGradient(0, 0, 0, -baseHeap - 10);
-                    sedimentGrad.addColorStop(0, `rgba(${darkColor}, 0.95)`);
-                    sedimentGrad.addColorStop(1, `rgba(${mainColor}, 0.4)`);
-                    ctx.fillStyle = sedimentGrad;
-                    
-                    ctx.beginPath();
-                    ctx.ellipse(0, 0, 72, 10, 0, Math.PI, 0, true);
-                    for (let x = 72; x >= -72; x -= 6) {
-                        const ridge = Math.sin(x*0.15)*3 + Math.cos(x*0.3)*2;
-                        ctx.lineTo(x, -baseHeap + ridge);
-                    }
-                    ctx.closePath();
-                    ctx.fill();
-                    ctx.restore();
+                    cloudGrad.addColorStop(0, `rgba(${mainC}, ${0.8 - (settle*0.5)})`); cloudGrad.addColorStop(1, `rgba(${mainC}, 0.0)`);
+                    ctx.fillStyle = cloudGrad; ctx.fillRect(-73, -liquidHeight, 146, liquidHeight);
+                    const baseHeap = 10 + (25 * settle);
+                    const sedGrad = ctx.createLinearGradient(0, 0, 0, -baseHeap - 10);
+                    sedGrad.addColorStop(0, `rgba(${darkC}, 0.95)`); sedGrad.addColorStop(1, `rgba(${mainC}, 0.4)`);
+                    ctx.fillStyle = sedGrad; ctx.beginPath(); ctx.ellipse(0, 0, 72, 10, 0, Math.PI, 0, true);
+                    for (let x = 72; x >= -72; x -= 6) { ctx.lineTo(x, -baseHeap + Math.sin(x*0.15)*3 + Math.cos(x*0.3)*2); }
+                    ctx.closePath(); ctx.fill(); ctx.restore();
                 }
 
-                ctx.fillStyle = 'rgba(148, 163, 184, 0.9)';
-                ctx.strokeStyle = 'rgba(148, 163, 184, 0.9)';
+                ctx.fillStyle = 'rgba(148, 163, 184, 0.9)'; ctx.strokeStyle = 'rgba(148, 163, 184, 0.9)';
                 for (let mark = 200; mark <= 1000; mark += 200) {
                     let markY = - (mark / 1000) * 195;
-                    ctx.beginPath();
-                    ctx.moveTo(35, markY); ctx.lineTo(50, markY);
-                    ctx.lineWidth = 1.5; ctx.stroke();
-                    
-                    ctx.save();
-                    ctx.translate(54, markY);
-                    ctx.scale(flip, 1); 
-                    ctx.textAlign = flip === 1 ? 'left' : 'right';
-                    ctx.textBaseline = 'middle';
-                    ctx.font = '10px "Prompt", sans-serif';
-                    ctx.fillText(mark, 0, 0);
-                    ctx.restore();
+                    ctx.beginPath(); ctx.moveTo(35, markY); ctx.lineTo(50, markY); ctx.lineWidth = 1.5; ctx.stroke();
+                    ctx.save(); ctx.translate(54, markY); ctx.scale(flip, 1); ctx.textAlign = flip === 1 ? 'left' : 'right';
+                    ctx.textBaseline = 'middle'; ctx.font = '10px "Prompt", sans-serif'; ctx.fillText(mark, 0, 0); ctx.restore();
                 }
 
                 let glassShine = ctx.createLinearGradient(-75, 0, 75, 0);
-                glassShine.addColorStop(0, 'rgba(255,255,255,0.0)');
-                glassShine.addColorStop(0.08, 'rgba(255,255,255,0.4)'); 
-                glassShine.addColorStop(0.12, 'rgba(255,255,255,0.0)');
-                glassShine.addColorStop(0.9, 'rgba(255,255,255,0.0)');
-                glassShine.addColorStop(0.96, 'rgba(255,255,255,0.2)');
-                glassShine.addColorStop(1, 'rgba(255,255,255,0.0)');
-                ctx.fillStyle = glassShine;
-                ctx.beginPath();
-                ctx.moveTo(-75, -225); ctx.lineTo(-75, 0);
-                ctx.ellipse(0, 0, 75, 12, 0, Math.PI, 0, true);
-                ctx.lineTo(75, -225);
-                ctx.ellipse(0, -225, 75, 12, 0, 0, Math.PI, true);
-                ctx.fill();
+                glassShine.addColorStop(0, 'rgba(255,255,255,0.0)'); glassShine.addColorStop(0.08, 'rgba(255,255,255,0.4)'); 
+                glassShine.addColorStop(0.12, 'rgba(255,255,255,0.0)'); glassShine.addColorStop(0.9, 'rgba(255,255,255,0.0)');
+                glassShine.addColorStop(0.96, 'rgba(255,255,255,0.2)'); glassShine.addColorStop(1, 'rgba(255,255,255,0.0)');
+                ctx.fillStyle = glassShine; ctx.beginPath(); ctx.moveTo(-75, -225); ctx.lineTo(-75, 0);
+                ctx.ellipse(0, 0, 75, 12, 0, Math.PI, 0, true); ctx.lineTo(75, -225); ctx.ellipse(0, -225, 75, 12, 0, 0, Math.PI, true); ctx.fill();
 
                 if (item.isCold && liquidHeight > 0) {
-                    let frost = ctx.createLinearGradient(0, 0, 0, -liquidHeight);
-                    frost.addColorStop(0, 'rgba(255,255,255,0.3)');
-                    frost.addColorStop(1, 'rgba(255,255,255,0.0)');
-                    ctx.fillStyle = frost;
-                    ctx.fill();
+                    let frost = ctx.createLinearGradient(0, 0, 0, -liquidHeight); frost.addColorStop(0, 'rgba(255,255,255,0.3)'); frost.addColorStop(1, 'rgba(255,255,255,0.0)');
+                    ctx.fillStyle = frost; ctx.fill();
                 }
 
-                ctx.strokeStyle = isSelected ? '#38bdf8' : 'rgba(148, 163, 184, 0.75)';
-                ctx.lineWidth = 3;
-                
-                ctx.beginPath();
-                ctx.moveTo(-75, -215); ctx.lineTo(-75, 0);
-                ctx.ellipse(0, 0, 75, 12, 0, Math.PI, 0, true);
-                ctx.lineTo(75, -225);
-                ctx.stroke();
-
-                ctx.beginPath();
-                ctx.moveTo(75, -225);
-                ctx.bezierCurveTo(75, -231.6, 41.4, -237, 0, -237);
-                ctx.bezierCurveTo(-45, -237, -75, -233, -88, -225); 
-                ctx.bezierCurveTo(-75, -217, -45, -213, 0, -213);
-                ctx.bezierCurveTo(41.4, -213, 75, -218.4, 75, -225);
-                ctx.closePath();
-                ctx.fillStyle = 'rgba(255, 255, 255, 0.1)';
-                ctx.fill(); ctx.stroke();
-
-                ctx.beginPath();
-                ctx.moveTo(-88, -225); ctx.quadraticCurveTo(-78, -223, -75, -215);
-                ctx.lineWidth = 1.5;
-                ctx.strokeStyle = isSelected ? 'rgba(56, 189, 248, 0.6)' : 'rgba(255,255,255,0.3)';
-                ctx.stroke();
-
-                ctx.fillStyle = isSelected ? '#38bdf8' : 'rgba(203, 213, 225, 0.9)';
-                ctx.beginPath(); ctx.arc(0, -235, 10, 0, Math.PI*2); ctx.fill();
-                ctx.strokeStyle = '#0f172a'; ctx.lineWidth = 2.5; ctx.stroke();
+                ctx.strokeStyle = isSelected ? '#38bdf8' : 'rgba(148, 163, 184, 0.75)'; ctx.lineWidth = 3;
+                ctx.beginPath(); ctx.moveTo(-75, -215); ctx.lineTo(-75, 0); ctx.ellipse(0, 0, 75, 12, 0, Math.PI, 0, true); ctx.lineTo(75, -225); ctx.stroke();
+                ctx.beginPath(); ctx.moveTo(75, -225); ctx.bezierCurveTo(75, -231.6, 41.4, -237, 0, -237); ctx.bezierCurveTo(-45, -237, -75, -233, -88, -225); 
+                ctx.bezierCurveTo(-75, -217, -45, -213, 0, -213); ctx.bezierCurveTo(41.4, -213, 75, -218.4, 75, -225); ctx.closePath();
+                ctx.fillStyle = 'rgba(255, 255, 255, 0.1)'; ctx.fill(); ctx.stroke();
+                ctx.beginPath(); ctx.moveTo(-88, -225); ctx.quadraticCurveTo(-78, -223, -75, -215); ctx.lineWidth = 1.5; ctx.strokeStyle = isSelected ? 'rgba(56, 189, 248, 0.6)' : 'rgba(255,255,255,0.3)'; ctx.stroke();
+                ctx.fillStyle = isSelected ? '#38bdf8' : 'rgba(203, 213, 225, 0.9)'; ctx.beginPath(); ctx.arc(0, -235, 10, 0, Math.PI*2); ctx.fill(); ctx.strokeStyle = '#0f172a'; ctx.lineWidth = 2.5; ctx.stroke();
 
                 if (item.isHot || item.isCold) {
-                    const tX = -105; const tY = -100;
-                    ctx.fillStyle = 'rgba(15,23,42,0.8)';
-                    ctx.beginPath(); ctx.roundRect(tX-6, tY-45, 12, 90, 6); ctx.fill();
-                    
-                    ctx.fillStyle = 'rgba(255,255,255,0.1)';
-                    ctx.beginPath(); ctx.roundRect(tX-2, tY-40, 4, 75, 2); ctx.fill();
-                    
-                    const thermoColor = item.isHot ? '#ef4444' : '#38bdf8';
-                    const thermoH = item.isHot ? 65 : 15;
-                    ctx.fillStyle = thermoColor;
-                    ctx.beginPath(); ctx.roundRect(tX-2, tY+35 - thermoH, 4, thermoH, 2); ctx.fill();
-                    ctx.beginPath(); ctx.arc(tX, tY+35, 6, 0, Math.PI*2); ctx.fill();
+                    const tX = -105; const tY = -100; ctx.fillStyle = 'rgba(15,23,42,0.8)'; ctx.beginPath(); ctx.roundRect(tX-6, tY-45, 12, 90, 6); ctx.fill();
+                    ctx.fillStyle = 'rgba(255,255,255,0.1)'; ctx.beginPath(); ctx.roundRect(tX-2, tY-40, 4, 75, 2); ctx.fill();
+                    const thermoH = item.isHot ? 65 : 15; ctx.fillStyle = item.isHot ? '#ef4444' : '#38bdf8';
+                    ctx.beginPath(); ctx.roundRect(tX-2, tY+35 - thermoH, 4, thermoH, 2); ctx.fill(); ctx.beginPath(); ctx.arc(tX, tY+35, 6, 0, Math.PI*2); ctx.fill();
                 }
 
                 if (item.hasBubbles && liquidHeight > 0) {
                     for (let i = 0; i < 7; i++) {
-                        let wobble = Math.sin(time*3+i)*4;
-                        let bX = -45 + (i*15) + wobble;
-                        let bY = -15 - ((time*35 + i*25) % Math.max(20, liquidHeight));
-                        if (bY > -liquidHeight) {
-                            ctx.beginPath(); ctx.arc(bX, bY, 4, 0, Math.PI*2);
-                            ctx.strokeStyle = 'rgba(255,255,255,0.7)'; ctx.lineWidth = 1; ctx.stroke();
-                            ctx.fillStyle = 'rgba(255,255,255,0.9)';
-                            ctx.beginPath(); ctx.arc(bX-1.5, bY-1.5, 1, 0, Math.PI*2); ctx.fill(); 
-                        }
+                        let bX = -45 + (i*15) + (Math.sin(time*3+i)*4); let bY = -15 - ((time*35 + i*25) % Math.max(20, liquidHeight));
+                        if (bY > -liquidHeight) { ctx.beginPath(); ctx.arc(bX, bY, 4, 0, Math.PI*2); ctx.strokeStyle = 'rgba(255,255,255,0.7)'; ctx.lineWidth = 1; ctx.stroke(); ctx.fillStyle = 'rgba(255,255,255,0.9)'; ctx.beginPath(); ctx.arc(bX-1.5, bY-1.5, 1, 0, Math.PI*2); ctx.fill(); }
                     }
                 }
 
-                if ((item.isHot || item.isCold || item.isExplosion) && liquidHeight > 0) {
-                    if (Math.random() < 0.4) {
-                        item.steamParticles.push({
-                            x: (Math.random() - 0.5) * 80,
-                            y: item.isCold ? -230 : -liquidHeight, 
-                            vx: (Math.random() - 0.5) * 1.5,
-                            vy: item.isCold ? 0.5 + Math.random() : -1 - Math.random() * 2,
-                            life: 1.0, size: 4 + Math.random()*8
-                        });
-                    }
+                if ((item.isHot || item.isCold || item.isExplosion) && liquidHeight > 0 && Math.random() < 0.4) {
+                    item.steamParticles.push({ x: (Math.random() - 0.5) * 80, y: item.isCold ? -230 : -liquidHeight, vx: (Math.random() - 0.5) * 1.5, vy: item.isCold ? 0.5 + Math.random() : -1 - Math.random() * 2, life: 1.0, size: 4 + Math.random()*8 });
                 }
                 
                 for (let i = item.steamParticles.length - 1; i >= 0; i--) {
-                    let p = item.steamParticles[i];
-                    p.x += p.vx; p.y += p.vy;
-                    p.life -= 0.015; p.size += 0.4;
+                    let p = item.steamParticles[i]; p.x += p.vx; p.y += p.vy; p.life -= 0.015; p.size += 0.4;
                     if (p.life <= 0) { item.steamParticles.splice(i, 1); } 
-                    else {
-                        ctx.fillStyle = item.isCold ? `rgba(200, 240, 255, ${p.life*0.2})` : `rgba(255, 255, 255, ${p.life*0.25})`;
-                        ctx.beginPath(); ctx.arc(p.x, p.y, p.size, 0, Math.PI*2); ctx.fill();
-                    }
+                    else { ctx.fillStyle = item.isCold ? `rgba(200, 240, 255, ${p.life*0.2})` : `rgba(255, 255, 255, ${p.life*0.25})`; ctx.beginPath(); ctx.arc(p.x, p.y, p.size, 0, Math.PI*2); ctx.fill(); }
                 }
 
                 ctx.restore();
@@ -1519,7 +1219,6 @@
         }
 
         resizeCanvas();
-        requestAnimationFrame(drawLab);
     </script>
 </body>
 </html>
